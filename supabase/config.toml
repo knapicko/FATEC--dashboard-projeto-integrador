@@ -1,0 +1,6 @@
+# Configuração mínima da Supabase CLI para publicar as Edge Functions deste projeto.
+# Publicar:  npx supabase functions deploy admin-contas --project-ref woqhicdlnkoksypipyoz
+project_id = "consertaja-dashboard"
+
+[functions.admin-contas]
+verify_jwt = true
