@@ -4,3 +4,8 @@ project_id = "consertaja-dashboard"
 
 [functions.admin-contas]
 verify_jwt = true
+
+# Publicar:  npx supabase functions deploy admin-consultas --project-ref woqhicdlnkoksypipyoz
+# Requer o segredo SUPABASE_ACCESS_TOKEN (token pessoal do Supabase).
+[functions.admin-consultas]
+verify_jwt = true

@@ -149,7 +149,104 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------------
--- 5) (Opcional) Tornar uma conta existente administradora pelo SQL.
+-- 5) Exclusão em cascata de solicitações, serviços e postagens.
+--    Percorre as chaves estrangeiras (pg_constraint) e apaga primeiro os
+--    registros que dependem dos itens escolhidos (pagamentos_stripe,
+--    pagamentos_solicitacao, anexos, deslocamentos, curtidas...).
+--    Com p_executar = false só conta o que seria apagado (prévia exibida
+--    no painel antes de confirmar). Vínculos ON DELETE SET NULL são
+--    mantidos pelo próprio Postgres (o registro fica sem o vínculo).
+-- ---------------------------------------------------------------------
+create or replace function public._admin_cascata(
+  p_tabela regclass,
+  p_coluna text,
+  p_valores text[],
+  p_executar boolean,
+  p_nivel integer,
+  p_relatorio jsonb
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  fk record;
+  v_filhos text[];
+  v_qtd bigint;
+  v_nome text := p_tabela::text;
+begin
+  if p_valores is null or cardinality(p_valores) = 0 then
+    return p_relatorio;
+  end if;
+  if p_nivel > 12 then
+    raise exception 'Dependências encadeadas demais a partir de %.', v_nome;
+  end if;
+
+  for fk in
+    select c.conrelid::regclass as filho, a.attname::text as col_filho, pa.attname::text as col_pai
+    from pg_constraint c
+    join pg_attribute a on a.attrelid = c.conrelid and a.attnum = c.conkey[1]
+    join pg_attribute pa on pa.attrelid = c.confrelid and pa.attnum = c.confkey[1]
+    where c.contype = 'f'
+      and c.confrelid = p_tabela
+      and cardinality(c.conkey) = 1
+      and c.confdeltype in ('a', 'r', 'c')   -- no action, restrict, cascade
+  loop
+    execute format('select array_agg(distinct %I::text) from %s where %I::text = any($1)', fk.col_pai, p_tabela, p_coluna)
+      into v_filhos using p_valores;
+    p_relatorio := public._admin_cascata(fk.filho, fk.col_filho, v_filhos, p_executar, p_nivel + 1, p_relatorio);
+  end loop;
+
+  if p_executar then
+    execute format('delete from %s where %I::text = any($1)', p_tabela, p_coluna) using p_valores;
+    get diagnostics v_qtd = row_count;
+  else
+    execute format('select count(*) from %s where %I::text = any($1)', p_tabela, p_coluna) into v_qtd using p_valores;
+  end if;
+
+  if v_qtd > 0 then
+    p_relatorio := jsonb_set(p_relatorio, array[v_nome], to_jsonb(coalesce((p_relatorio ->> v_nome)::bigint, 0) + v_qtd));
+  end if;
+  return p_relatorio;
+end;
+$$;
+
+create or replace function public.admin_exclusao_cascata(p_tabela text, p_ids bigint[], p_executar boolean default false)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_pk text;
+begin
+  if not public.is_dashboard_admin() then
+    raise exception 'Acesso negado: somente administradores do painel.' using errcode = '42501';
+  end if;
+
+  v_pk := case p_tabela
+    when 'solicitacoes' then 'id_solicitacao'
+    when 'servicos_profissional' then 'id_servico_prof'
+    when 'postagens' then 'id_postagem'
+  end;
+  if v_pk is null then
+    raise exception 'Exclusão em cascata não permitida para a tabela %.', p_tabela using errcode = '42501';
+  end if;
+  if p_ids is null or cardinality(p_ids) = 0 then
+    return '{}'::jsonb;
+  end if;
+
+  return public._admin_cascata(('public.' || quote_ident(p_tabela))::regclass, v_pk, p_ids::text[], p_executar, 0, '{}'::jsonb);
+end;
+$$;
+
+revoke all on function public._admin_cascata(regclass, text, text[], boolean, integer, jsonb) from public, anon, authenticated;
+revoke all on function public.admin_exclusao_cascata(text, bigint[], boolean) from public, anon;
+grant execute on function public.admin_exclusao_cascata(text, bigint[], boolean) to authenticated;
+
+-- ---------------------------------------------------------------------
+-- 6) (Opcional) Tornar uma conta existente administradora pelo SQL.
 --    Normalmente isso é feito na tela "Administradores" do painel.
 -- ---------------------------------------------------------------------
 -- insert into public.admin_users (user_id, email)

@@ -332,6 +332,130 @@ body.menu-open .avatar-btn .chev{color:#fff}
 .m .mm span{padding:8px;border-radius:10px;background:#fff;border:1.5px solid #e1e9f1;text-align:center;font-size:10px;font-weight:500}
 .m .mm span.a{border-color:var(--blue);color:var(--blue-600);background:#f0faff}
 
+/* estrutura das telas reais do app (cabeçalho azul, abas, barra inferior) */
+.ah{flex:none;background:#1db1f6;color:#fff}
+.ah+.m,.tabs+.m{padding-top:11px}
+.ah .sb{color:#fff}
+.ah .bar{display:flex;align-items:center;gap:8px;padding:2px 13px 10px;font:600 14px/1.15 Outfit}
+.ah .bar>svg{width:16px;height:16px;flex:none;stroke-width:2.4}
+.ah .bar .sp{margin-left:auto;display:flex;gap:9px}
+.ah .bar .sp svg{width:15px;height:15px}
+.ah .sbox{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:#fff;color:#0b1f36;border-radius:999px;padding:7px 11px;font:500 10.5px Inter}
+.ah .sbox svg{margin-left:auto;color:#6b7a8c;width:13px;height:13px}
+.ah .loc{display:flex;justify-content:space-between;align-items:center;padding:0 14px 9px;font:600 10px Inter}
+.ah .loc svg{width:11px;height:11px;vertical-align:-2px}
+.ah.w{background:#fff;color:#0b1f36;border-bottom:1px solid #e3eaf2}
+.ah.w .sb{color:#0b1f36}
+.ah .who{display:flex;align-items:center;gap:8px;min-width:0}
+.ah .who b{display:block;font:600 12px Inter}
+.ah .who small{display:inline-block;margin-top:2px;padding:1px 5px;border-radius:4px;background:#e0f4fe;color:#0c7fc0;font:700 7px Inter;letter-spacing:.04em}
+.ah .avr{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 10px Inter;color:#fff;background:#8b6f47;border:2px solid #e9dcc3;flex:none}
+.ah .uh{display:flex;align-items:center;gap:10px;padding:2px 14px 14px}
+.ah .uh .avc{width:42px;height:42px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font:700 14px Outfit;flex:none;position:relative}
+.ah .uh .avc::after{content:"";position:absolute;right:-2px;bottom:-2px;width:12px;height:12px;border-radius:50%;background:#0c7fc0;border:2px solid #fff}
+.ah .uh b{display:block;font:600 13px Outfit}
+.ah .uh small{font-size:9.5px;opacity:.92}
+.tabs{flex:none;display:flex;background:#fff;font-size:10px;color:#6b7a8c;text-align:center}
+.tabs span{flex:1;padding:9px 0}
+.tabs span.a{color:#0c9be0;font-weight:600;background:#e8f6fe;box-shadow:inset 0 -2px #1db1f6}
+.bn{flex:none;display:flex;justify-content:space-around;background:#fff;border-top:1px solid #e6edf4;padding:6px 4px 11px;font-size:8px;color:#6b7a8c}
+.bn span{display:flex;flex-direction:column;align-items:center;gap:2px}
+.bn svg{width:15px;height:15px}
+.bn span.a{color:#1db1f6;font-weight:600}
+.m .tagc{display:inline-block;white-space:nowrap;padding:2px 7px;border-radius:6px;font-size:8.5px;font-weight:600;background:#fde2e4;color:#9f1239}
+.m .tagc.bl{background:#e0f2fe;color:#0369a1}
+.m .tagc.y{background:#f7efdc;color:#7c5a1e;border:1px solid #d9bf86}
+.m .tagc.g{background:#dcfce7;color:#15803d}
+.m .sc{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px -8px rgba(11,31,54,.25);flex:none}
+.m .sc .img{height:64px;background:linear-gradient(135deg,#e3f4fd,#c4e8fb);display:grid;place-items:center;color:#0c7fc0}
+.m .sc .img svg{width:22px;height:22px}
+.m .sc .bd{padding:8px 10px 10px;display:grid;gap:4px}
+.m .sc .sf{display:flex;justify-content:space-between;align-items:center}
+.m .price{font:700 14px Outfit;color:#0c9be0;white-space:nowrap}
+.m .price.l{font-size:19px;color:#0b1f36}
+.m .sec{font-weight:600;color:#0c9be0;font-size:10.5px}
+.m .ch2{display:flex;flex-wrap:wrap;gap:5px}
+.m .ch2 span{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border:1px solid #dbe5ef;border-radius:7px;background:#fff;font-size:8.5px;font-weight:500}
+.m .ch2 svg{width:10px;height:10px;color:#0c9be0}
+.m .hero-img{height:92px;margin:-6px -14px 0;background:linear-gradient(135deg,#2d3a4a,#5b6b7f);display:grid;place-items:center;color:#cfe3f5;flex:none}
+.m .hero-img svg{width:28px;height:28px}
+.m .bbar{margin:auto -14px -14px;padding:9px 14px 11px;background:#fff;border-top:1px solid #e6edf4;display:flex;align-items:center;gap:10px}
+.m .bbar .btnx{margin:0;flex:1;padding:9px;white-space:nowrap;font-size:11px;display:flex;align-items:center;justify-content:center;gap:5px}
+.m .bbar .btnx svg{width:13px;height:13px;stroke-width:2.6}
+.m .btnx.sm{margin:0;padding:7px;font-size:10.5px;border-radius:999px}
+.m.chatbg{background-color:#f6f7f9;background-image:radial-gradient(#d6dce4 1.1px,transparent 1.3px);background-size:13px 13px}
+.m .date{align-self:center;background:#fff;border-radius:999px;padding:3px 10px;font-size:9px;color:#6b7a8c;box-shadow:0 2px 6px -3px rgba(11,31,54,.3)}
+.m .bub small{display:block;text-align:right;font-size:8px;opacity:.85;margin-top:3px}
+.inbar{flex:none;display:flex;align-items:center;gap:7px;padding:8px 10px 12px;background:#fff;color:#6b7a8c}
+.inbar .f{flex:1;display:flex;align-items:center;background:#eef2f6;border-radius:999px;padding:8px 10px;font-size:10px;color:#8a99aa}
+.inbar .f svg{margin-left:auto}
+.inbar .mic{width:30px;height:30px;border-radius:50%;background:#1db1f6;color:#fff;display:grid;place-items:center;flex:none}
+.inbar svg{width:14px;height:14px}
+.m .grp{font-size:9px;color:#6b7a8c;padding:6px 2px 0}
+.m.flat{gap:0;padding-top:0}
+.m .kv{display:flex;justify-content:space-between;align-items:center;font-size:10px;padding:3px 0}
+.m .kv b{font-size:10.5px}
+.m .code{display:flex;gap:5px}
+.m .code span{width:20px;height:25px;border-radius:7px;background:#f0faff;border:1.5px solid #9fdcfb;display:grid;place-items:center;font:700 13px Outfit;color:#0c7fc0}
+.m .okb{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:#dcfce7;color:#15803d;font-weight:600;font-size:10px}
+.m .okb svg{width:14px;height:14px;stroke-width:2.6}
+.m .week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.m .week span{display:grid;gap:2px;padding:5px 0;border-radius:9px;font-size:8px;color:#6b7a8c}
+.m .week span b{font:600 11.5px Outfit;color:#0b1f36}
+.m .week span.a{background:#1db1f6;color:#e8f6fe}
+.m .week span.a b{color:#fff}
+.m .week span i{width:4px;height:4px;border-radius:50%;background:#f59e0b;margin:auto}
+.m .seg{display:flex;gap:5px;overflow:hidden}
+.m .seg span{flex:none;padding:5px 9px;border-radius:999px;background:#fff;border:1px solid #dbe5ef;font-size:9px;font-weight:600;color:#475569}
+.m .seg span.a{background:#1db1f6;border-color:#1db1f6;color:#fff}
+.m .seg em{font-style:normal;margin-left:4px;padding:0 5px;border-radius:999px;background:rgba(255,255,255,.3)}
+.m .qg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.m .qg span{display:grid;justify-items:center;gap:4px;padding:8px 2px;border-radius:12px;background:#fff;font-size:8px;line-height:1.15;text-align:center;box-shadow:0 3px 10px -7px rgba(11,31,54,.3)}
+.m .qg svg{width:16px;height:16px;color:#0c9be0}
+.m .two{display:flex;gap:6px}
+.m .two span{flex:1;text-align:center;border-radius:9px;padding:7px;font-weight:600;font-size:10px;background:#1db1f6;color:#fff}
+.m .two span+span{background:#eef3f8;color:#334155}
+.m .tgl{margin-left:auto;width:28px;height:16px;border-radius:999px;background:#1db1f6;position:relative;flex:none}
+.m .tgl::after{content:"";position:absolute;right:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff}
+.m .tgl.off{background:#cfd9e3}
+.m .tgl.off::after{right:auto;left:2px}
+.m .drow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #eef2f6;font-size:10px}
+.m .drow:last-child{border-bottom:0}
+.m .drow b{width:54px;font-weight:600}
+.m .drow .mu{font-size:9.5px}
+.m .thumb{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#e3f4fd,#c4e8fb);display:grid;place-items:center;color:#0c7fc0;flex:none}
+.m .thumb svg{width:17px;height:17px}
+.m .mt{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.m .mt div{background:#fff;border-radius:12px;padding:8px 9px;box-shadow:0 3px 10px -7px rgba(11,31,54,.3)}
+.m .mt b{display:block;font:600 16px Outfit;color:#0b1f36}
+.m .mt span{font-size:8.5px;color:#6b7a8c}
+.m .chart{display:flex;align-items:flex-end;gap:6px;height:70px;padding-top:4px}
+.m .chart i{flex:1;height:var(--h);border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#1db1f6,#7fd3fa)}
+.m .chart-l{display:flex;justify-content:space-between;font-size:8px;color:#6b7a8c;padding:0 4px}
+.m .radarmap{position:relative;height:178px;border-radius:14px;overflow:hidden;background:#e6eff6;flex:none}
+.m .radarmap svg{position:absolute;inset:0;width:100%;height:100%}
+.m .inp{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1.5px solid #9fdcfb;border-radius:10px;background:#f0faff;font-weight:700;font-size:12px;color:#0b1f36}
+.m .inp span{font-size:9px;font-weight:500;color:#6b7a8c}
+
+/* celular do profissional */
+.pro-show{display:grid;grid-template-columns:auto 1fr;gap:clamp(40px,6vw,80px);align-items:center;margin-top:70px}
+.pro-phone{position:relative;display:flex;justify-content:center;align-items:center;min-height:640px}
+.pro-phone .glow{position:absolute;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(29,177,246,.28),transparent 65%);filter:blur(10px);animation:pulse 6s ease-in-out infinite}
+.pro-phone .phone{--w:296px}
+.pl{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transform:scale(1.04) translateY(14px);transition:opacity .7s var(--ease),transform .9s var(--ease);background:#f2f6fc}
+.pl.on{opacity:1;transform:none;z-index:2}
+.pro-tabs{display:grid;gap:10px}
+.pro-tab{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;width:100%;text-align:left;padding:18px 20px;border-radius:20px;border:1px solid #213e61;background:transparent;color:#fff;cursor:pointer;position:relative;overflow:hidden;font:inherit;transition:background .4s,border-color .4s}
+.pro-tab:hover{border-color:#2f6aa3}
+.pro-tab .ic{width:44px;height:44px;border-radius:13px;background:rgba(29,177,246,.14);color:var(--blue);display:grid;place-items:center}
+.pro-tab h3{font-size:19px;font-weight:600;margin-bottom:4px}
+.pro-tab p{color:#9fb3ca;font-size:14px;line-height:1.5}
+.pro-tab.on{background:var(--navy-2);border-color:#2f6aa3}
+.pro-tab .pg{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--blue)}
+.pro-tab.on .pg{animation:proProg var(--dur,5s) linear forwards}
+.pro-show.paused .pro-tab.on .pg{animation-play-state:paused}
+@keyframes proProg{to{width:100%}}
+
 /* PRO bento */
 .pro-sec{background:var(--navy);color:#fff;padding:140px 0;overflow:hidden}
 .pro-sec .h2{color:#fff}
@@ -533,6 +657,12 @@ footer a:hover{color:var(--blue)}
   .chk{grid-template-columns:1fr}
   .phones .ph.l,.phones .ph.r{display:none}
   .phones{height:520px}
+  .pro-show{grid-template-columns:1fr;gap:36px;margin-top:50px}
+  .pro-phone{min-height:540px}
+  .pro-phone .phone{--w:256px}
+  .pro-tab{padding:15px 16px;grid-template-columns:38px 1fr;gap:12px}
+  .pro-tab .ic{width:38px;height:38px}
+  .pro-tab h3{font-size:17px}
 }
 @media (max-width:560px){
   .nav-r{gap:12px}
@@ -607,6 +737,14 @@ footer a:hover{color:var(--blue)}
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
     <symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
     <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="i-attach" viewBox="0 0 24 24"><path d="M20 11.5 12 19.5a5 5 0 0 1-7-7l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7L9.7 17.2a1.7 1.7 0 0 1-2.4-2.4L15 7"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="19" r="1.7" fill="currentColor"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24"><path d="M3 5h18v4H3zM5 9v10h14V9M10 13h4"/></symbol>
   </defs>
 </svg>
 
@@ -738,8 +876,8 @@ footer a:hover{color:var(--blue)}
       <div class="st"><div class="n"><svg class="i"><use href="#i-search"/></svg></div><b>Encontre</b><span>por proximidade</span></div>
       <div class="st"><div class="n"><svg class="i"><use href="#i-chat"/></svg></div><b>Converse</b><span>direto no chat</span></div>
       <div class="st"><div class="n"><svg class="i"><use href="#i-clip"/></svg></div><b>Contrate</b><span>um ou vários serviços</span></div>
-      <div class="st"><div class="n"><svg class="i"><use href="#i-nav"/></svg></div><b>Acompanhe</b><span>em tempo real</span></div>
       <div class="st"><div class="n"><svg class="i"><use href="#i-card"/></svg></div><b>Pague</b><span>com segurança</span></div>
+      <div class="st"><div class="n"><svg class="i"><use href="#i-nav"/></svg></div><b>Acompanhe</b><span>em tempo real</span></div>
       <div class="st"><div class="n"><svg class="i"><use href="#i-star"/></svg></div><b>Avalie</b><span>e favorite</span></div>
     </div>
   </div>
@@ -759,104 +897,133 @@ footer a:hover{color:var(--blue)}
           <!-- layers -->
           <div class="layer on" data-l="0" style="background:#f2f6fc"><div class="sb"><span>9:41</span><i></i></div><img src="assets/landing/tela-home.webp" alt="Tela Home"></div>
 
-          <div class="layer" data-l="1"><div class="sb"><span>9:41</span><i></i></div>
-            <div class="m">
-              <div class="t">Buscar</div>
-              <div class="srch"><svg class="i"><use href="#i-search"/></svg>afiador de facas<svg class="i" style="margin-left:auto;color:var(--blue)"><use href="#i-sliders"/></svg></div>
-              <div class="chips"><span class="a">Disponível hoje</span><span>Avaliações</span><span>Preço</span><span>Novidades</span></div>
-              <div class="mu">3 profissionais perto de você</div>
-              <div class="card row"><span class="av">AS</span><div><div class="nm">Afiação São João</div><div class="mu"><span class="st">★ 4.9</span> · Afiador · 1,2 km</div></div><span class="pill">Aberto</span></div>
-              <div class="card row"><span class="av o">ZP</span><div><div class="nm">Zé Paneleiro</div><div class="mu"><span class="st">★ 4.8</span> · Paneleiro · 2,4 km</div></div><span class="pill">Aberto</span></div>
-              <div class="card row"><span class="av p">MC</span><div><div class="nm">Marta Costuras</div><div class="mu"><span class="st">★ 4.7</span> · Costureira · 3,1 km</div></div><span class="pill" style="background:#fee2e2;color:#b91c1c">Fechado</span></div>
-              <div class="card row"><span class="av g">CR</span><div><div class="nm">Chaveiro Rápido</div><div class="mu"><span class="st">★ 4.6</span> · Chaveiro · 3,8 km</div></div><span class="pill">Aberto</span></div>
+          <div class="layer" data-l="1">
+            <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div>
+              <div class="bar"><svg class="i"><use href="#i-back"/></svg><div class="sbox">afiador de facas<svg class="i"><use href="#i-search"/></svg></div><svg class="i"><use href="#i-help"/></svg></div>
+              <div class="loc"><span><svg class="i"><use href="#i-pin"/></svg> Jardim Santa Cruz ▾</span><span><svg class="i"><use href="#i-sliders"/></svg> Filtros ▾</span></div>
             </div>
+            <div class="tabs"><span class="a">Todos</span><span>Serviços</span><span>Profissionais</span></div>
+            <div class="m" style="padding-top:10px">
+              <div class="sc"><div class="img"><svg class="i"><use href="#i-tool"/></svg></div><div class="bd">
+                <div class="nm">Afiação de facas e tesouras</div>
+                <div><span class="tagc">Afiador</span></div>
+                <div class="sf"><span class="mu">Atendimento em Domicílio</span><span class="mu" style="color:#0c9be0"><svg class="i" style="width:13px;height:13px"><use href="#i-truck"/></svg></span></div>
+                <div class="sf"><span class="price">R$ 25,00</span><span class="mu">1,2 km de você</span></div>
+              </div></div>
+              <div class="card">
+                <div class="row"><span class="av">AS</span><div><div class="nm">Afiação São João</div><span class="tagc bl">Profissional</span></div><span class="mu" style="margin-left:auto"><span class="st">★</span> 4.9</span></div>
+                <div class="mu" style="margin:7px 0 8px"><svg class="i" style="width:10px;height:10px;vertical-align:-1px"><use href="#i-nav"/></svg> 1,2 km de você · <span style="color:#15803d;font-weight:600">Disponível hoje</span></div>
+                <div class="btnx sm">Ver Perfil</div>
+              </div>
+            </div>
+            <div class="bn"><span class="a"><svg class="i"><use href="#i-home"/></svg>Home</span><span><svg class="i"><use href="#i-radar"/></svg>Radar</span><span><svg class="i"><use href="#i-chat"/></svg>Mensagens</span><span><svg class="i"><use href="#i-clip"/></svg>Pedidos</span><span><svg class="i"><use href="#i-user"/></svg>Perfil</span></div>
           </div>
 
           <div class="layer" data-l="2" style="background:#11243b"><div class="sb dk"><span>9:41</span><i></i></div><img src="assets/landing/tela-perfil.webp" alt="Perfil profissional"></div>
 
-          <div class="layer" data-l="3"><div class="sb"><span>9:41</span><i></i></div>
-            <div class="m">
-              <div class="t">Contratação</div>
-              <div class="card"><div class="row"><span class="av">LA</span><div><div class="nm">Lucas Andrade</div><div class="mu">Sapataria · ★ 4.9</div></div></div></div>
-              <div class="card"><div class="ln"><span>Colagem de tênis</span><span class="qty">R$ 45,00</span></div><div class="ln"><span>Troca de solado</span><span class="qty">R$ 60,00</span></div></div>
-              <div class="mu" style="font-weight:600;color:#0b1f36">Modalidade de atendimento</div>
-              <div class="mm"><span>Em domicílio</span><span class="a">Leva e traz</span><span>Retirada no local</span><span>Receba em casa</span></div>
-              <div class="opt a"><span class="ic"><svg class="i"><use href="#i-pin"/></svg></span><div><div class="nm">Casa</div><div class="mu">Jardim Santa Cruz</div></div></div>
-              <div class="ln tot"><span>Total</span><span>R$ 105,00</span></div>
-              <div class="btnx">Enviar solicitação</div>
-            </div>
-          </div>
-
-          <div class="layer" data-l="4"><div class="sb"><span>9:41</span><i></i></div>
+          <div class="layer" data-l="3">
+            <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Colagem de tênis<span class="sp"><svg class="i"><use href="#i-help"/></svg><svg class="i"><use href="#i-heart"/></svg></span></div></div>
             <div class="m" style="gap:8px">
-              <div class="hd"><span class="av">LA</span><div><div class="nm">Lucas Andrade</div><div class="mu" style="color:#15803d">● online</div></div><svg class="i" style="margin-left:auto;width:16px;color:#6b7a8c"><use href="#i-search"/></svg></div>
-              <div class="bub me">Oi! Consegue colar a sola de um tênis ainda essa semana?</div>
-              <div class="bub ot">Consigo sim 👟 Me manda uma foto, por favor?</div>
-              <div class="bub me" style="padding:4px"><div style="height:70px;width:120px;border-radius:10px;background:linear-gradient(135deg,#bfe8fd,#7fcff7);display:grid;place-items:center;color:#fff"><svg class="i"><use href="#i-image"/></svg></div></div>
-              <div class="prop"><div class="mu">PROPOSTA DE SERVIÇO</div><div class="pv">R$ 45,00</div><div class="mu" style="margin-bottom:8px">Colagem de tênis · Leva e traz</div><div class="ac"><span>Aceitar</span><span>Recusar</span></div></div>
-              <div class="typing"><i></i><i></i><i></i></div>
+              <div class="hero-img"><svg class="i"><use href="#i-image"/></svg></div>
+              <div class="row"><span class="price l">R$ 45,00</span><span class="tagc y" style="margin-left:auto">Sapataria</span></div>
+              <div class="sec">Formas de Pagamento:</div>
+              <div class="ch2"><span><svg class="i"><use href="#i-pix"/></svg>Pix</span><span><svg class="i"><use href="#i-card"/></svg>Cartão de crédito</span><span><svg class="i"><use href="#i-card"/></svg>Cartão de débito</span></div>
+              <div class="sec">Métodos de realização:</div>
+              <div class="ch2"><span><svg class="i"><use href="#i-truck"/></svg>Leva e Traz</span><span><svg class="i"><use href="#i-store"/></svg>Retirado no Local</span><span><svg class="i"><use href="#i-house"/></svg>Receba em Casa</span><span><svg class="i"><use href="#i-box"/></svg>Atendimento em Domicílio</span></div>
+              <div class="nm" style="font-size:12px">Oferecido por Lucas Andrade</div>
+              <div class="card row"><span class="av">LA</span><div><div class="nm">Lucas Andrade</div><div class="mu"><span class="st">★</span> 4.9 · Sapataria</div></div><span class="pill" style="background:#1db1f6;color:#fff">Conversar</span></div>
+              <div class="bbar"><div><div class="price">R$ 45,00</div><div class="mu">4 métodos de realização</div></div><div class="btnx"><svg class="i"><use href="#i-plus"/></svg>Adicionar Serviço</div></div>
             </div>
           </div>
 
-          <div class="layer" data-l="5"><div class="sb"><span>9:41</span><i></i></div>
+          <div class="layer" data-l="4">
+            <div class="ah w"><div class="sb"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg><div class="who"><span class="avr">LA</span><div><b>Lucas Andrade</b><small>SAPATARIA</small></div></div><span class="sp"><svg class="i"><use href="#i-help"/></svg><svg class="i"><use href="#i-dots"/></svg></span></div></div>
+            <div class="m chatbg" style="gap:7px;padding-top:10px">
+              <div class="date">20/11/2026</div>
+              <div class="bub me">Oi! Consegue colar a sola de um tênis ainda essa semana?<small>14:27 ✓✓</small></div>
+              <div class="bub ot">Consigo sim 👟 Me manda uma foto, por favor?<small>14:29</small></div>
+              <div class="bub me" style="padding:4px"><div style="height:64px;width:118px;border-radius:10px;background:linear-gradient(135deg,#bfe8fd,#7fcff7);display:grid;place-items:center;color:#fff"><svg class="i"><use href="#i-image"/></svg></div><small style="padding:0 6px 2px">14:30 ✓✓</small></div>
+              <div class="prop"><div class="mu">PROPOSTA DE SERVIÇO</div><div class="pv">R$ 45,00</div><div class="mu" style="margin-bottom:8px">Colagem de tênis · Leva e Traz</div><div class="ac"><span>Aceitar</span><span>Recusar</span></div></div>
+            </div>
+            <div class="inbar"><svg class="i"><use href="#i-attach"/></svg><div class="f">Mensagem...<svg class="i"><use href="#i-cam"/></svg></div><span class="mic"><svg class="i"><use href="#i-mic"/></svg></span></div>
+          </div>
+
+          <div class="layer" data-l="5">
+            <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Pagamento<span class="sp"><svg class="i"><use href="#i-help"/></svg></span></div></div>
             <div class="m">
-              <div class="t">Acompanhar pedido</div>
-              <div class="map">
-                <svg viewBox="0 0 260 250" preserveAspectRatio="xMidYMid slice">
-                  <rect width="260" height="250" fill="#e6eff6"/>
-                  <g stroke="#fff" stroke-width="9"><path d="M0 60H260M0 150H260M0 215H260M50 0V250M140 0V250M215 0V250"/></g>
-                  <g fill="#d5ecd9"><rect x="62" y="72" width="66" height="66" rx="6"/><rect x="152" y="160" width="52" height="46" rx="6"/></g>
-                  <rect x="152" y="72" width="52" height="66" rx="6" fill="#dbe6f0"/>
-                  <path id="rt" d="M50 230V150H140V60H215V20" fill="none" stroke="#1db1f6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="215" cy="20" r="9" fill="#0b1f36"/><circle cx="215" cy="20" r="3.5" fill="#fff"/>
+              <div class="card row"><span class="av">LA</span><div><div class="nm">Colagem de tênis + Troca de solado</div><div class="mu">Lucas Andrade · Leva e Traz</div></div></div>
+              <div class="sec">Resumo dos Valores</div>
+              <div class="card"><div class="kv"><span class="mu">Subtotal do serviço</span><b>R$ 105,00</b></div><div class="kv"><span class="mu">Taxa de serviço</span><b>R$ 0,00</b></div><div class="ln tot"><span>Total</span><span>R$ 105,00</span></div></div>
+              <div class="sec">Método de Pagamento</div>
+              <div class="opt a"><span class="ic"><svg class="i"><use href="#i-pix"/></svg></span><div><div class="nm">PIX</div><div class="mu">Confirmação rápida</div></div><span class="rd"></span></div>
+              <div class="opt"><span class="ic"><svg class="i"><use href="#i-card"/></svg></span><div><div class="nm">Cartão de Crédito</div><div class="mu">Em até 3x</div></div><span class="rd"></span></div>
+              <div class="opt"><span class="ic"><svg class="i"><use href="#i-card"/></svg></span><div><div class="nm">Cartão de Débito</div><div class="mu">Débito à vista</div></div><span class="rd"></span></div>
+              <div class="mu" style="display:flex;gap:6px;align-items:center"><svg class="i" style="width:14px;height:14px;color:var(--blue)"><use href="#i-shield"/></svg>Pagamento 100% seguro</div>
+              <div class="btnx">Confirmar pagamento</div>
+            </div>
+          </div>
+
+          <div class="layer" data-l="6">
+            <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Profissional A Caminho<span class="sp"><svg class="i"><use href="#i-help"/></svg></span></div></div>
+            <div class="m">
+              <div class="map" style="height:168px;flex:none">
+                <svg viewBox="0 0 260 170" preserveAspectRatio="xMidYMid slice">
+                  <rect width="260" height="170" fill="#e6eff6"/>
+                  <g stroke="#fff" stroke-width="9"><path d="M0 45H260M0 115H260M50 0V170M140 0V170M215 0V170"/></g>
+                  <g fill="#d5ecd9"><rect x="62" y="57" width="66" height="46" rx="6"/><rect x="152" y="127" width="52" height="36" rx="6"/></g>
+                  <path id="rt" d="M50 160V115H140V45H215V12" fill="none" stroke="#1db1f6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="215" cy="12" r="9" fill="#0b1f36"/><circle cx="215" cy="12" r="3.5" fill="#fff"/>
                   <g><circle r="11" fill="#1db1f6" opacity=".25"><animate attributeName="r" values="8;16;8" dur="1.8s" repeatCount="indefinite"/></circle><circle r="7" fill="#1db1f6" stroke="#fff" stroke-width="3"/>
                   <animateMotion dur="7s" repeatCount="indefinite" rotate="auto"><mpath href="#rt"/></animateMotion></g>
                 </svg>
               </div>
               <div class="card">
-                <div class="row"><span class="av">LA</span><div><div class="nm">Lucas está a caminho</div><div class="mu">Chegada estimada · 8 min</div></div><span class="pill" style="background:#e0f4fe;color:#0c7fc0">Em rota</span></div>
-                <div style="height:10px"></div>
-                <div class="tl"><span class="d"></span><span class="d"></span><span class="d"></span><span></span></div>
-                <div class="tlb"><span>Aceito</span><span>A caminho</span><span>Chegou</span><span>Concluído</span></div>
+                <div class="row"><div><div class="mu" style="letter-spacing:.08em;font-weight:600">PREVISÃO DE CHEGADA</div><div class="price l">8 min</div></div><span class="pill" style="background:#e0f4fe;color:#0c7fc0">Em rota</span></div>
+                <div class="kv"><span class="mu">Distância restante</span><b>3,4 km</b></div>
+                <div class="mu" style="color:#15803d;font-weight:600">● GPS em tempo real - Conectado</div>
               </div>
+              <div class="card row"><span class="av">LA</span><div><div class="nm">Lucas Andrade</div><div class="mu">Honda CG 160 Cargo • Prata</div></div><span class="tagc bl" style="margin-left:auto">ABC-4J89</span></div>
+              <div class="card"><div class="row" style="justify-content:space-between"><div><div class="nm">Código de Confirmação</div><div class="mu">Forneça apenas na chegada</div></div><div class="code"><span>4</span><span>8</span><span>2</span><span>1</span></div></div></div>
+              <div class="btnx">Conversar no Chat</div>
             </div>
           </div>
 
-          <div class="layer" data-l="6"><div class="sb"><span>9:41</span><i></i></div>
+          <div class="layer" data-l="7">
+            <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Pedido Finalizado<span class="sp"><svg class="i"><use href="#i-help"/></svg></span></div></div>
             <div class="m">
-              <div class="t">Pagamento</div>
-              <div class="card"><div class="ln"><span class="mu">Colagem de tênis</span><span>R$ 45,00</span></div><div class="ln"><span class="mu">Troca de solado</span><span>R$ 60,00</span></div><div class="ln tot"><span>Total</span><span>R$ 105,00</span></div></div>
-              <div class="opt a"><span class="ic"><svg class="i"><use href="#i-pix"/></svg></span><div><div class="nm">PIX</div><div class="mu">Aprovação imediata</div></div><span class="rd"></span></div>
-              <div class="opt"><span class="ic"><svg class="i"><use href="#i-card"/></svg></span><div><div class="nm">Cartão de crédito</div><div class="mu">Em até 3x</div></div><span class="rd"></span></div>
-              <div class="opt"><span class="ic"><svg class="i"><use href="#i-card"/></svg></span><div><div class="nm">Cartão de débito</div><div class="mu">À vista</div></div><span class="rd"></span></div>
-              <div class="mu" style="display:flex;gap:6px;align-items:center"><svg class="i" style="width:14px;height:14px;color:var(--blue)"><use href="#i-shield"/></svg>Valor liberado ao profissional após a conclusão</div>
-              <div class="btnx">Pagar com PIX</div>
-            </div>
-          </div>
-
-          <div class="layer" data-l="7"><div class="sb"><span>9:41</span><i></i></div>
-            <div class="m">
-              <div class="t">Avaliar serviço</div>
-              <div class="card" style="text-align:center;padding:16px 10px"><span class="av" style="margin:0 auto 8px;width:48px;height:48px;border-radius:14px;font-size:14px">LA</span><div class="nm">Colagem de tênis</div><div class="mu">Concluído hoje · Lucas Andrade</div><div style="height:12px"></div>
-                <div class="stars"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div></div>
+              <div class="okb"><svg class="i"><use href="#i-check"/></svg>Pagamento liberado ao profissional</div>
+              <div class="card">
+                <div class="row"><span class="av">LA</span><div><div class="nm">Colagem de tênis</div><div class="mu">Lucas Andrade · Finalizado hoje</div></div><span class="tagc g" style="margin-left:auto">PAGO</span></div>
+                <div class="ln tot"><span>Total</span><span>R$ 105,00</span></div>
+              </div>
+              <div class="card" style="text-align:center;padding:12px 10px">
+                <div class="nm" style="font-size:12.5px;margin-bottom:9px">Avalie Este Serviço</div>
+                <div class="stars"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div>
+              </div>
               <div class="area">Ficou perfeito, parece novo! Atendimento rápido e muito educado. Recomendo 👏</div>
-              <div class="mu" style="font-weight:600;color:#0b1f36">Seus favoritos</div>
-              <div class="card row"><span class="av o">ZP</span><div><div class="nm">Zé Paneleiro</div><div class="mu">Seguindo</div></div><svg class="i" style="margin-left:auto;width:18px;color:#ef4444;fill:#ef4444"><use href="#i-heart"/></svg></div>
+              <div class="sec">Detalhes do Pedido</div>
+              <div class="card"><div class="kv"><span class="mu">Solicitado</span><b>18/11 · 14:30</b></div><div class="kv"><span class="mu">Finalizado</span><b>20/11 · 10:12</b></div><div class="kv"><span class="mu">Modalidade</span><b>Leva e Traz</b></div></div>
               <div class="btnx">Enviar avaliação</div>
             </div>
           </div>
 
-          <div class="layer" data-l="8"><div class="sb"><span>9:41</span><i></i></div>
-            <div class="m" style="gap:4px">
-              <div class="row" style="padding:6px 0 10px"><span class="av" style="width:46px;height:46px;border-radius:50%;background:#8b5e4a;font-size:16px">M</span><div><div class="t" style="font-size:16px">Marcos</div><div class="mu">Editar perfil</div></div></div>
-              <div class="li"><svg class="i"><use href="#i-user"/></svg>Informações pessoais<em>›</em></div>
-              <div class="li"><svg class="i"><use href="#i-pin"/></svg>Meus endereços<em>›</em></div>
-              <div class="li"><svg class="i"><use href="#i-clip"/></svg>Histórico de pedidos<em>›</em></div>
-              <div class="li"><svg class="i"><use href="#i-bell"/></svg>Notificações<span class="tg"></span></div>
-              <div class="li"><svg class="i"><use href="#i-sliders"/></svg>Aparência e acessibilidade<em>›</em></div>
-              <div class="li"><svg class="i"><use href="#i-shield"/></svg>Permissões<em>›</em></div>
-              <div class="li"><svg class="i"><use href="#i-help"/></svg>Perguntas frequentes e suporte<em>›</em></div>
+          <div class="layer" data-l="8">
+            <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="uh"><span class="avc">M</span><div><b>Marcos Oliveira</b><small>Editar Informações › <u>Seguindo</u></small></div><svg class="i" style="width:16px;height:16px;margin-left:auto"><use href="#i-help"/></svg></div></div>
+            <div class="m flat">
+              <div class="li"><svg class="i"><use href="#i-edit"/></svg>Editar Meus Dados<em>›</em></div>
+              <div class="grp">Sua Atividade</div>
+              <div class="li"><svg class="i"><use href="#i-pin"/></svg>Meus Endereços<em>›</em></div>
+              <div class="li"><svg class="i"><use href="#i-star"/></svg>Profissionais Seguidos<em>›</em></div>
+              <div class="li"><svg class="i"><use href="#i-archive"/></svg>Histórico de Pedidos<em>›</em></div>
+              <div class="li"><svg class="i"><use href="#i-star"/></svg>Avaliações de Serviços<em>›</em></div>
+              <div class="li"><svg class="i"><use href="#i-bell"/></svg>Notificações<em>›</em></div>
+              <div class="li"><svg class="i"><use href="#i-heart"/></svg>Serviços Favoritados<em>›</em></div>
+              <div class="grp">Suporte</div>
+              <div class="li"><svg class="i"><use href="#i-help"/></svg>Perguntas Frequentes<em>›</em></div>
+              <div class="li"><svg class="i"><use href="#i-chat"/></svg>Fale Conosco<em>›</em></div>
+              <div class="li"><svg class="i"><use href="#i-set"/></svg>Configurações<em>›</em></div>
             </div>
+            <div class="bn"><span><svg class="i"><use href="#i-home"/></svg>Home</span><span><svg class="i"><use href="#i-radar"/></svg>Radar</span><span><svg class="i"><use href="#i-chat"/></svg>Mensagens</span><span><svg class="i"><use href="#i-clip"/></svg>Pedidos</span><span class="a"><svg class="i"><use href="#i-user"/></svg>Perfil</span></div>
           </div>
         </div></div>
       </div>
@@ -872,10 +1039,10 @@ footer a:hover{color:var(--blue)}
           <ul><li><svg class="i"><use href="#i-check"/></svg>Lista de contratação</li><li><svg class="i"><use href="#i-check"/></svg>Seleção de endereço</li><li><svg class="i"><use href="#i-check"/></svg>Modalidade de atendimento</li><li><svg class="i"><use href="#i-check"/></svg>Acompanhamento de propostas</li></ul></div>
         <div class="step" data-s="4"><span class="num">05 — CHAT</span><h3>Converse direto com quem faz</h3><p>Combine detalhes, envie fotos e receba propostas de valor dentro da própria conversa.</p>
           <ul><li><svg class="i"><use href="#i-check"/></svg>Mensagens em tempo real</li><li><svg class="i"><use href="#i-check"/></svg>Imagens, documentos e arquivos</li><li><svg class="i"><use href="#i-check"/></svg>Galeria de mídias e busca</li><li><svg class="i"><use href="#i-check"/></svg>Tema do chat personalizável</li><li><svg class="i"><use href="#i-check"/></svg>Propostas de serviço</li></ul></div>
-        <div class="step" data-s="5"><span class="num">06 — ACOMPANHAMENTO</span><h3>Veja o profissional chegando</h3><p>Status do pedido, rota no mapa e estimativa de chegada, com notificações a cada atualização.</p>
-          <ul><li><svg class="i"><use href="#i-check"/></svg>Status do serviço</li><li><svg class="i"><use href="#i-check"/></svg>Deslocamento no mapa</li><li><svg class="i"><use href="#i-check"/></svg>Estimativa de chegada</li><li><svg class="i"><use href="#i-check"/></svg>Confirmação de conclusão</li><li><svg class="i"><use href="#i-check"/></svg>Histórico de pedidos</li></ul></div>
-        <div class="step" data-s="6"><span class="num">07 — PAGAMENTO</span><h3>Pague do jeito que preferir</h3><p>PIX ou cartão, com resumo claro dos valores. O pagamento só é liberado ao profissional depois que você confirma a conclusão.</p>
+        <div class="step" data-s="5"><span class="num">06 — PAGAMENTO</span><h3>Pague do jeito que preferir</h3><p>PIX ou cartão, com resumo claro dos valores. O pagamento só é liberado ao profissional depois que você confirma a conclusão.</p>
           <ul><li><svg class="i"><use href="#i-check"/></svg>PIX</li><li><svg class="i"><use href="#i-check"/></svg>Cartão de crédito e débito</li><li><svg class="i"><use href="#i-check"/></svg>Status do pagamento</li><li><svg class="i"><use href="#i-check"/></svg>Liberação após conclusão</li></ul></div>
+        <div class="step" data-s="6"><span class="num">07 — ACOMPANHAMENTO</span><h3>Veja o profissional chegando</h3><p>Status do pedido, rota no mapa e estimativa de chegada, com notificações a cada atualização.</p>
+          <ul><li><svg class="i"><use href="#i-check"/></svg>Status do serviço</li><li><svg class="i"><use href="#i-check"/></svg>Deslocamento no mapa</li><li><svg class="i"><use href="#i-check"/></svg>Estimativa de chegada</li><li><svg class="i"><use href="#i-check"/></svg>Confirmação de conclusão</li><li><svg class="i"><use href="#i-check"/></svg>Histórico de pedidos</li></ul></div>
         <div class="step" data-s="7"><span class="num">08 — AVALIAÇÕES E FAVORITOS</span><h3>Sua opinião constrói reputação</h3><p>Avalie atendimentos concluídos, comente e mantenha seus profissionais preferidos sempre por perto.</p>
           <ul><li><svg class="i"><use href="#i-check"/></svg>Avaliação e comentários</li><li><svg class="i"><use href="#i-check"/></svg>Avaliações realizadas</li><li><svg class="i"><use href="#i-check"/></svg>Serviços favoritados</li><li><svg class="i"><use href="#i-check"/></svg>Profissionais seguidos</li></ul></div>
         <div class="step" data-s="8"><span class="num">09 — PERFIL E CONFIGURAÇÕES</span><h3>Um app do seu jeito</h3><p>Gerencie seus dados, endereços e notificações, e ajuste a aparência para ficar confortável de usar.</p>
@@ -891,6 +1058,124 @@ footer a:hover{color:var(--blue)}
     <span class="eyebrow rv">Para profissionais</span>
     <h2 class="h2 rv" style="--d:80ms;margin-top:18px">Seu ofício,<br><em>com vitrine e gestão.</em></h2>
     <p class="lead rv" style="--d:160ms;margin-top:20px">Ferramentas para divulgar o trabalho, encontrar clientes próximos, organizar a agenda e administrar cada atendimento — do primeiro contato ao pagamento.</p>
+
+    <div class="pro-show rv" id="proShow">
+      <div class="pro-phone" aria-hidden="true">
+        <div class="glow"></div>
+        <div class="phone"><div class="scr">
+            <div class="pl on" data-p="0">
+              <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="uh"><span class="avc">MS</span><div><small>Que bom te ver de novo por aqui!</small><b>Marcos Silva</b></div><svg class="i" style="width:16px;height:16px;margin-left:auto"><use href="#i-bell"/></svg></div></div>
+              <div class="m">
+                <div class="card">
+                  <div class="row" style="justify-content:space-between;margin-bottom:7px"><span class="nm">Agenda da semana</span><span class="mu">Novembro</span></div>
+                  <div class="week"><span>DOM<b>16</b></span><span>SEG<b>17</b><i></i></span><span>TER<b>18</b></span><span>QUA<b>19</b><i></i></span><span class="a">QUI<b>20</b><i></i></span><span>SEX<b>21</b></span><span>SÁB<b>22</b><i></i></span></div>
+                </div>
+                <div class="seg"><span class="a">Pendentes<em>2</em></span><span>Ativos</span><span>Concluídos</span><span>Cancelados</span></div>
+                <div class="card">
+                  <div class="row"><span class="av o">AS</span><div><div class="nm">Ana Souza</div><div class="mu">Afiação de facas · Em domicílio</div></div><span class="price" style="margin-left:auto">R$ 30</span></div>
+                  <div style="height:8px"></div><div class="two"><span>Aceitar</span><span>Recusar</span></div>
+                </div>
+                <div class="qg"><span><svg class="i"><use href="#i-tool"/></svg>Meus Serviços</span><span><svg class="i"><use href="#i-cal"/></svg>Disponibilidade</span><span><svg class="i"><use href="#i-pin"/></svg>Área de Atuação</span><span><svg class="i"><use href="#i-wallet"/></svg>Dados Financeiros</span></div>
+                <div class="nm" style="font-size:12px">Suas Postagens</div>
+                <div class="card row"><span class="av" style="border-radius:50%">MS</span><span class="mu" style="flex:1;background:#eef2f6;border-radius:999px;padding:8px 10px">No que você está trabalhando hoje?</span><svg class="i" style="width:16px;height:16px;color:#0c9be0"><use href="#i-image"/></svg></div>
+              </div>
+              <div class="bn"><span class="a"><svg class="i"><use href="#i-home"/></svg>Home</span><span><svg class="i"><use href="#i-radar"/></svg>Radar</span><span><svg class="i"><use href="#i-chat"/></svg>Mensagens</span><span><svg class="i"><use href="#i-clip"/></svg>Pedidos</span><span><svg class="i"><use href="#i-user"/></svg>Perfil</span></div>
+            </div>
+            <div class="pl" data-p="1">
+              <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Radar Geográfico<span class="sp"><svg class="i"><use href="#i-help"/></svg></span></div></div>
+              <div class="tabs"><span class="a">Solicitações Próximas</span><span>Minhas Propostas</span></div>
+              <div class="m" style="padding-top:10px">
+                <div class="radarmap"><svg viewBox="0 0 260 178" preserveAspectRatio="xMidYMid slice">
+                  <rect width="260" height="178" fill="#e6eff6"/>
+                  <g stroke="#fff" stroke-width="8"><path d="M0 48H260M0 128H260M66 0V178M196 0V178"/></g>
+                  <g fill="#d5ecd9"><rect x="78" y="60" width="106" height="56" rx="6"/></g>
+                  <circle cx="130" cy="89" r="74" fill="rgba(29,177,246,.10)" stroke="#1db1f6" stroke-width="1.5" stroke-dasharray="5 5"/>
+                  <circle cx="130" cy="89" r="10" fill="#1db1f6" opacity=".25"><animate attributeName="r" values="8;30;8" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".35;0;.35" dur="2.4s" repeatCount="indefinite"/></circle>
+                  <circle cx="130" cy="89" r="8" fill="#0b1f36" stroke="#fff" stroke-width="2.5"/>
+                  <g><circle cx="92" cy="58" r="12" fill="#f59e0b" opacity=".25"><animate attributeName="r" values="7;14;7" dur="1.8s" repeatCount="indefinite"/></circle><circle cx="92" cy="58" r="6.5" fill="#f59e0b" stroke="#fff" stroke-width="2.5"/></g>
+                  <circle cx="178" cy="122" r="6.5" fill="#f59e0b" stroke="#fff" stroke-width="2.5"/>
+                  <circle cx="168" cy="44" r="6.5" fill="#f59e0b" stroke="#fff" stroke-width="2.5"/>
+                </svg></div>
+                <div class="card">
+                  <div class="row"><div><div class="nm">Afiar 3 facas de cozinha</div><div class="mu">Ana S. · 1,2 km de você · há 5 min</div></div><span class="tagc" style="margin-left:auto">Afiador</span></div>
+                  <div style="height:8px"></div>
+                  <div class="inp">R$ 30,00<span>Valor proposto</span></div>
+                </div>
+                <div class="card row"><div><div class="nm">Cabo de panela solto</div><div class="mu">Carlos M. · 2,4 km de você · há 12 min</div></div><span class="tagc bl" style="margin-left:auto">Paneleiro</span></div>
+                <div class="btnx">Enviar Proposta</div>
+              </div>
+              <div class="bn"><span><svg class="i"><use href="#i-home"/></svg>Home</span><span class="a"><svg class="i"><use href="#i-radar"/></svg>Radar</span><span><svg class="i"><use href="#i-chat"/></svg>Mensagens</span><span><svg class="i"><use href="#i-clip"/></svg>Pedidos</span><span><svg class="i"><use href="#i-user"/></svg>Perfil</span></div>
+            </div>
+            <div class="pl" data-p="2">
+              <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Ajustar Disponibilidade<span class="sp"><svg class="i"><use href="#i-help"/></svg></span></div></div>
+              <div class="m">
+                <div class="sec">Disponibilidade Recorrente</div>
+                <div class="card" style="padding:4px 10px">
+                  <div class="drow"><b>Segunda</b><span class="mu">08:00 – 18:00</span><span class="tgl"></span></div>
+                  <div class="drow"><b>Terça</b><span class="mu">08:00 – 18:00</span><span class="tgl"></span></div>
+                  <div class="drow"><b>Quarta</b><span class="mu">08:00 – 18:00</span><span class="tgl"></span></div>
+                  <div class="drow"><b>Quinta</b><span class="mu">08:00 – 18:00</span><span class="tgl"></span></div>
+                  <div class="drow"><b>Sexta</b><span class="mu">08:00 – 17:00</span><span class="tgl"></span></div>
+                  <div class="drow"><b>Sábado</b><span class="mu">08:00 – 12:00</span><span class="tgl"></span></div>
+                  <div class="drow"><b>Domingo</b><span class="mu">Indisponível</span><span class="tgl off"></span></div>
+                </div>
+                <div class="sec">Exceções e Férias</div>
+                <div class="card row"><span class="thumb"><svg class="i"><use href="#i-cal"/></svg></span><div><div class="nm">Férias</div><div class="mu">20/12 a 05/01</div></div><span class="tagc" style="margin-left:auto">Bloqueado</span></div>
+                <div class="card row"><span class="thumb"><svg class="i"><use href="#i-clock"/></svg></span><div><div class="nm">Ausência parcial</div><div class="mu">27/11 · 13:00 – 15:00</div></div><span class="tagc y" style="margin-left:auto">Parcial</span></div>
+                <div class="btnx">Definir período de férias</div>
+              </div>
+            </div>
+            <div class="pl" data-p="3">
+              <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Meus Serviços<span class="sp"><svg class="i"><use href="#i-plus"/></svg></span></div></div>
+              <div class="m">
+                <div class="seg"><span class="a">Todos<em>4</em></span><span>Ativos</span><span>Inativos</span></div>
+                <div class="card row"><span class="thumb"><svg class="i"><use href="#i-tool"/></svg></span><div><div class="nm">Colagem de tênis</div><div class="price" style="font-size:12px">R$ 45,00</div><div class="mu">Leva e Traz · Retirada</div></div><span class="tgl"></span></div>
+                <div class="card row"><span class="thumb"><svg class="i"><use href="#i-tool"/></svg></span><div><div class="nm">Troca de solado</div><div class="price" style="font-size:12px">R$ 60,00</div><div class="mu">Retirado no Local</div></div><span class="tgl"></span></div>
+                <div class="card row"><span class="thumb"><svg class="i"><use href="#i-image"/></svg></span><div><div class="nm">Pintura de tênis</div><div class="price" style="font-size:12px">R$ 80,00</div><div class="mu">Receba em Casa</div></div><span class="tgl off"></span></div>
+                <div class="card row"><span class="thumb"><svg class="i"><use href="#i-tool"/></svg></span><div><div class="nm">Troca de zíper</div><div class="price" style="font-size:12px">R$ 35,00</div><div class="mu">Atendimento em Domicílio</div></div><span class="tgl"></span></div>
+                <div class="btnx" style="display:flex;align-items:center;justify-content:center;gap:5px"><svg class="i" style="width:13px;height:13px;stroke-width:2.6"><use href="#i-plus"/></svg>Adicionar serviço</div>
+              </div>
+              <div class="bn"><span class="a"><svg class="i"><use href="#i-home"/></svg>Home</span><span><svg class="i"><use href="#i-radar"/></svg>Radar</span><span><svg class="i"><use href="#i-chat"/></svg>Mensagens</span><span><svg class="i"><use href="#i-clip"/></svg>Pedidos</span><span><svg class="i"><use href="#i-user"/></svg>Perfil</span></div>
+            </div>
+            <div class="pl" data-p="4">
+              <div class="ah"><div class="sb dk"><span>9:41</span><i></i></div><div class="bar"><svg class="i"><use href="#i-back"/></svg>Estatísticas dos Serviços<span class="sp"><svg class="i"><use href="#i-help"/></svg></span></div></div>
+              <div class="m">
+                <div class="mt">
+                  <div><b>38</b><span>Concluídos</span></div>
+                  <div><b>4,9 <span class="st" style="font-size:13px;color:#f59e0b">★</span></b><span>Avaliação média</span></div>
+                  <div><b>R$ 2.340</b><span>Recebido no mês</span></div>
+                  <div><b>2</b><span>Pendentes</span></div>
+                </div>
+                <div class="card">
+                  <div class="nm" style="margin-bottom:4px">Serviços na semana</div>
+                  <div class="chart"><i style="--h:35%"></i><i style="--h:62%"></i><i style="--h:48%"></i><i style="--h:84%"></i><i style="--h:70%"></i><i style="--h:96%"></i><i style="--h:28%"></i></div>
+                  <div class="chart-l"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+                </div>
+                <div class="sec">Minhas Avaliações</div>
+                <div class="card"><div class="row"><span class="av o">AS</span><div><div class="nm">Ana Souza</div><div class="mu"><span class="st">★★★★★</span> · há 2 dias</div></div></div><div class="mu" style="margin-top:6px;color:#334155">Facas afiadíssimas e atendimento super rápido!</div></div>
+                <div class="card"><div class="row"><span class="av g">CM</span><div><div class="nm">Carlos Mendes</div><div class="mu"><span class="st">★★★★★</span> · há 5 dias</div></div></div><div class="mu" style="margin-top:6px;color:#334155">O cabo da panela ficou firme. Recomendo!</div></div>
+              </div>
+            </div>
+        </div></div>
+      </div>
+      <div class="pro-tabs" role="tablist" aria-label="Telas do aplicativo para profissionais">
+          <button class="pro-tab on" type="button" role="tab" aria-selected="true" data-p="0">
+            <span class="ic"><svg class="i"><use href="#i-home"/></svg></span><span><h3>Painel do profissional</h3><p>Agenda da semana, pedidos pendentes para aceitar ou recusar e atalhos para tudo o que você gerencia.</p></span><span class="pg"></span>
+          </button>
+          <button class="pro-tab" type="button" role="tab" aria-selected="false" data-p="1">
+            <span class="ic"><svg class="i"><use href="#i-radar"/></svg></span><span><h3>Radar de solicitações</h3><p>Pedidos de clientes num raio de 5 km. Veja os detalhes e envie a sua proposta de preço.</p></span><span class="pg"></span>
+          </button>
+          <button class="pro-tab" type="button" role="tab" aria-selected="false" data-p="2">
+            <span class="ic"><svg class="i"><use href="#i-cal"/></svg></span><span><h3>Agenda e disponibilidade</h3><p>Dias e horários de atendimento, exceções do mês e períodos de férias.</p></span><span class="pg"></span>
+          </button>
+          <button class="pro-tab" type="button" role="tab" aria-selected="false" data-p="3">
+            <span class="ic"><svg class="i"><use href="#i-tool"/></svg></span><span><h3>Gerenciamento de serviços</h3><p>Catálogo com preço, fotos e métodos de realização. Ative ou pause cada serviço.</p></span><span class="pg"></span>
+          </button>
+          <button class="pro-tab" type="button" role="tab" aria-selected="false" data-p="4">
+            <span class="ic"><svg class="i"><use href="#i-chart"/></svg></span><span><h3>Estatísticas e avaliações</h3><p>Serviços concluídos, valores recebidos e o que os clientes dizem de você.</p></span><span class="pg"></span>
+          </button>
+      </div>
+    </div>
 
     <div class="bento">
       <div class="b w8 rv">
@@ -1266,6 +1551,51 @@ footer a:hover{color:var(--blue)}
   addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false);});
   addEventListener('resize',()=>{if(innerWidth>1080&&document.body.classList.contains('menu-open'))setMenu(false);});
   totop.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+})();
+</script>
+<script>
+/* Celular do profissional: troca de tela automática + abas clicáveis */
+(() => {
+  const box = document.getElementById('proShow');
+  if (!box) return;
+  const tabs = [...box.querySelectorAll('.pro-tab')];
+  const screens = [...box.querySelectorAll('.pl')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DUR = 5200;
+  let index = 0;
+  let timer = null;
+  let visible = false;
+  box.style.setProperty('--dur', DUR + 'ms');
+
+  function schedule() {
+    clearTimeout(timer);
+    timer = null;
+    if (reduce || !visible || box.classList.contains('paused')) return;
+    timer = setTimeout(() => show(index + 1), DUR);
+  }
+
+  function show(next) {
+    index = (next + screens.length) % screens.length;
+    screens.forEach((screen, k) => screen.classList.toggle('on', k === index));
+    tabs.forEach((tab, k) => {
+      tab.classList.toggle('on', k === index);
+      tab.setAttribute('aria-selected', String(k === index));
+    });
+    const bar = tabs[index].querySelector('.pg');
+    bar.style.animation = 'none';
+    void bar.offsetWidth;
+    bar.style.animation = '';
+    schedule();
+  }
+
+  tabs.forEach((tab, k) => tab.addEventListener('click', () => show(k)));
+  box.addEventListener('mouseenter', () => { box.classList.add('paused'); clearTimeout(timer); });
+  box.addEventListener('mouseleave', () => { box.classList.remove('paused'); show(index); });
+  new IntersectionObserver((entries) => entries.forEach((entry) => {
+    visible = entry.isIntersecting;
+    if (visible) show(index);
+    else clearTimeout(timer);
+  }), { threshold: 0.3 }).observe(box);
 })();
 </script>
 <script type="module" src="/landing/auth.js"></script>

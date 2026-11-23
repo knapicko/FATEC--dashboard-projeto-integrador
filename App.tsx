@@ -27,6 +27,7 @@ type PageKey =
   | 'bugReports'
   | 'notifications'
   | 'emails'
+  | 'queries'
   | 'admins';
 
 type IconName =
@@ -56,7 +57,12 @@ type IconName =
   | 'moon'
   | 'sun'
   | 'home'
-  | 'shield';
+  | 'shield'
+  | 'database'
+  | 'play'
+  | 'trash'
+  | 'copy'
+  | 'sort';
 
 interface User {
   id_usuario: number;
@@ -273,6 +279,54 @@ type ColorFormat = 'hex' | 'rgb' | 'hsl' | 'cmyk';
 type ThemeMode = 'light' | 'dark';
 type RGB = [number, number, number];
 
+type SortState = { key: string; dir: 'asc' | 'desc' };
+type SortOption<T> = { key: string; label: string; value: (row: T) => string | number | null | undefined };
+type CascadeTable = 'solicitacoes' | 'servicos_profissional' | 'postagens';
+type CascadeState = {
+  table: CascadeTable;
+  ids: number[];
+  report: Record<string, number> | null;
+  loading: boolean;
+  running: boolean;
+  error: string;
+};
+
+// Páginas que têm barra própria de busca, ordenação e seleção.
+const listPages = new Set<PageKey>(['requests', 'services', 'trades', 'functions', 'posts']);
+
+const cascadeMeta: Record<CascadeTable, { singular: string; plural: string; feminine: boolean }> = {
+  solicitacoes: { singular: 'solicitação', plural: 'solicitações', feminine: true },
+  servicos_profissional: { singular: 'serviço', plural: 'serviços', feminine: false },
+  postagens: { singular: 'postagem', plural: 'postagens', feminine: true },
+};
+
+// Nomes amigáveis das tabelas mostradas no aviso de exclusão.
+const tableLabels: Record<string, string> = {
+  solicitacoes: 'Solicitações',
+  servicos_profissional: 'Serviços',
+  postagens: 'Postagens',
+  pagamentos_stripe: 'Pagamentos (Stripe)',
+  pagamentos_solicitacao: 'Pagamentos da solicitação',
+  pagamentos_pix: 'Pagamentos PIX',
+  solicitacoes_anexos: 'Anexos da solicitação',
+  imagens_solicitacao: 'Imagens da solicitação',
+  deslocamento_profissional: 'Deslocamentos do profissional',
+  deslocamentos_profissional: 'Deslocamentos do profissional',
+  lista_servicos_solicitacao: 'Itens da lista de serviços',
+  lista_servicos: 'Itens da lista de serviços',
+  propostas_solicitacao: 'Propostas',
+  avaliacoes: 'Avaliações',
+  imagens_postagem: 'Mídias da postagem',
+  imagens_postagens: 'Imagens da postagem',
+  curtidas_postagem: 'Curtidas',
+  curtidas_postagens: 'Curtidas',
+  comentarios_postagem: 'Comentários',
+  comentarios_postagens: 'Comentários',
+  servicos_favoritos: 'Serviços favoritados',
+  metodos_entrega_servico: 'Métodos de entrega do serviço',
+  imagens_servico: 'Imagens do serviço',
+};
+
 const emptyData: DashboardData = {
   users: [],
   emails: [],
@@ -337,6 +391,7 @@ const navGroups: { label: string; items: { key: PageKey; label: string; icon: Ic
     label: 'Administração',
     items: [
       { key: 'admins', label: 'Administradores', icon: 'shield' },
+      { key: 'queries', label: 'Consultas SQL', icon: 'database' },
     ],
   },
 ];
@@ -359,6 +414,7 @@ const pageMeta: Record<PageKey, { title: string; subtitle: string }> = {
   bugReports: { title: 'Relatórios de bugs', subtitle: 'Acompanhe problemas reportados pelos usuários.' },
   notifications: { title: 'Notificações gerais', subtitle: 'Prepare avisos para os usuários da plataforma.' },
   emails: { title: 'E-mails recebidos', subtitle: 'Acompanhe as mensagens recebidas pela plataforma.' },
+  queries: { title: 'Consultas SQL', subtitle: 'Consultas salvas no SQL Editor do Supabase, compartilhadas com todos os administradores.' },
 };
 
 const iconPaths: Record<IconName, string> = {
@@ -388,6 +444,11 @@ const iconPaths: Record<IconName, string> = {
   moon: 'M20.5 15.2A8.5 8.5 0 0 1 8.8 3.5 8.5 8.5 0 1 0 20.5 15.2z',
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
   shield: 'M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z M9 12l2 2 4-4',
+  database: 'M12 3c4.97 0 9 1.34 9 3s-4.03 3-9 3-9-1.34-9-3 4.03-3 9-3z M3 6v6c0 1.66 4.03 3 9 3s9-1.34 9-3V6 M3 12v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6',
+  play: 'M7 4.5v15l12-7.5z',
+  trash: 'M4 7h16 M10 11v6 M14 11v6 M6 7l1 13h10l1-13 M9 7V4h6v3',
+  copy: 'M9 9h11v11H9z M5 15H4V4h11v1',
+  sort: 'M7 4v16 M3 8l4-4 4 4 M17 20V4 M13 16l4 4 4-4',
   sun: 'M12 3v2 M12 19v2 M5.64 5.64l1.42 1.42 M16.94 16.94l1.42 1.42 M3 12h2 M19 12h2 M5.64 18.36l1.42-1.42 M16.94 7.06l1.42-1.42 M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z',
 };
 
@@ -661,10 +722,14 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
   const [clientForm, setClientForm] = useState<{ id: number; nome: string } | null>(null);
   const [detailsUserId, setDetailsUserId] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
+  const [sort, setSort] = useState<SortState | null>(null);
+  const [selected, setSelected] = useState<Set<number>>(() => new Set());
+  const [cascade, setCascade] = useState<CascadeState | null>(null);
+  const [bulkBusy, setBulkBusy] = useState(false);
   const title = pageMeta[page];
 
-  async function loadData() {
-    setLoading(true);
+  async function loadData(silent = false) {
+    if (!silent) setLoading(true);
     setRefreshing(true);
     try {
       if (!supabase) {
@@ -1105,36 +1170,38 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
     }
   }
 
+  async function removeTrade(trade: Trade) {
+    if (!supabase) throw new Error(supabaseConfigMessage);
+    const linkedFunctions = data.functions.filter((item) => item.fk_oficio === trade.id_oficio);
+    // 1ª opção: função segura no banco (exclui ofício + funções numa única transação).
+    const rpc = await supabase.rpc('admin_delete_oficio', { p_id_oficio: trade.id_oficio });
+    if (rpc.error && !isMissingRpc(rpc.error)) throw rpc.error;
+    if (rpc.error) {
+      // Fallback: exclusão direta nas tabelas, conferindo se o RLS realmente permitiu.
+      if (linkedFunctions.length) {
+        const removedFunctions = await supabase.from('funcoes').delete().eq('fk_oficio', trade.id_oficio).select('id_funcao');
+        if (removedFunctions.error) throw removedFunctions.error;
+        if ((removedFunctions.data?.length ?? 0) < linkedFunctions.length) throw rlsBlockedError('excluiu', 'as funções deste ofício');
+      }
+      const removedTrade = await supabase.from('oficios').delete().eq('id_oficio', trade.id_oficio).select('id_oficio');
+      if (removedTrade.error) throw removedTrade.error;
+      if (!removedTrade.data?.length) throw rlsBlockedError('excluiu', 'o ofício');
+    }
+    setData((current) => ({
+      ...current,
+      trades: current.trades.filter((item) => item.id_oficio !== trade.id_oficio),
+      functions: current.functions.filter((item) => item.fk_oficio !== trade.id_oficio),
+    }));
+  }
+
   async function deleteTrade(trade: Trade) {
     const linkedFunctions = data.functions.filter((item) => item.fk_oficio === trade.id_oficio);
     const question = linkedFunctions.length
       ? `Excluir o ofício "${trade.categoria}" e ${linkedFunctions.length === 1 ? 'a função vinculada' : `as ${linkedFunctions.length} funções vinculadas`} a ele?\n\nSe alguma função estiver em uso por profissionais ou serviços, nada será excluído.`
       : `Excluir o ofício "${trade.categoria}"?`;
     if (!window.confirm(question)) return;
-    if (!supabase) {
-      notifyError(new Error(supabaseConfigMessage));
-      return;
-    }
     try {
-      // 1ª opção: função segura no banco (exclui ofício + funções numa única transação).
-      const rpc = await supabase.rpc('admin_delete_oficio', { p_id_oficio: trade.id_oficio });
-      if (rpc.error && !isMissingRpc(rpc.error)) throw rpc.error;
-      if (rpc.error) {
-        // Fallback: exclusão direta nas tabelas, conferindo se o RLS realmente permitiu.
-        if (linkedFunctions.length) {
-          const removedFunctions = await supabase.from('funcoes').delete().eq('fk_oficio', trade.id_oficio).select('id_funcao');
-          if (removedFunctions.error) throw removedFunctions.error;
-          if ((removedFunctions.data?.length ?? 0) < linkedFunctions.length) throw rlsBlockedError('excluiu', 'as funções deste ofício');
-        }
-        const removedTrade = await supabase.from('oficios').delete().eq('id_oficio', trade.id_oficio).select('id_oficio');
-        if (removedTrade.error) throw removedTrade.error;
-        if (!removedTrade.data?.length) throw rlsBlockedError('excluiu', 'o ofício');
-      }
-      setData((current) => ({
-        ...current,
-        trades: current.trades.filter((item) => item.id_oficio !== trade.id_oficio),
-        functions: current.functions.filter((item) => item.fk_oficio !== trade.id_oficio),
-      }));
+      await removeTrade(trade);
       notifySuccess(linkedFunctions.length ? 'Ofício e funções vinculadas excluídos.' : 'Ofício excluído.');
     } catch (error) {
       notifyError(describeDeleteError(error, 'este ofício'));
@@ -1178,24 +1245,25 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
     }
   }
 
+  async function removeFunction(item: ProfessionalFunction) {
+    if (!supabase) throw new Error(supabaseConfigMessage);
+    const rpc = await supabase.rpc('admin_delete_funcao', { p_id_funcao: item.id_funcao });
+    if (rpc.error && !isMissingRpc(rpc.error)) throw rpc.error;
+    if (rpc.error) {
+      const removed = await supabase.from('funcoes').delete().eq('id_funcao', item.id_funcao).select('id_funcao');
+      if (removed.error) throw removed.error;
+      if (!removed.data?.length) throw rlsBlockedError('excluiu', 'a função');
+    }
+    setData((current) => ({
+      ...current,
+      functions: current.functions.filter((currentItem) => currentItem.id_funcao !== item.id_funcao),
+    }));
+  }
+
   async function deleteFunction(item: ProfessionalFunction) {
     if (!window.confirm(`Excluir a função "${item.funcao}"?\n\nSe ela estiver em uso por profissionais ou serviços, a exclusão será bloqueada.`)) return;
-    if (!supabase) {
-      notifyError(new Error(supabaseConfigMessage));
-      return;
-    }
     try {
-      const rpc = await supabase.rpc('admin_delete_funcao', { p_id_funcao: item.id_funcao });
-      if (rpc.error && !isMissingRpc(rpc.error)) throw rpc.error;
-      if (rpc.error) {
-        const removed = await supabase.from('funcoes').delete().eq('id_funcao', item.id_funcao).select('id_funcao');
-        if (removed.error) throw removed.error;
-        if (!removed.data?.length) throw rlsBlockedError('excluiu', 'a função');
-      }
-      setData((current) => ({
-        ...current,
-        functions: current.functions.filter((currentItem) => currentItem.id_funcao !== item.id_funcao),
-      }));
+      await removeFunction(item);
       notifySuccess('Função excluída.');
     } catch (error) {
       notifyError(describeDeleteError(error, 'esta função'));
@@ -1236,30 +1304,176 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
     }
   }
 
-  async function deletePost(post: Post) {
-    if (!window.confirm(`Excluir permanentemente a postagem #${post.id_postagem} e os registros de mídia e curtidas relacionados?`)) return;
+  function selectPage(nextPage: PageKey) {
+    setPage(nextPage);
+    setSearch('');
+    setSort(null);
+    setSelected(new Set());
+    setSidebarOpen(false);
+  }
+
+  // ---------- Ordenação e seleção das listas ----------
+  function toggleSort(key: string) {
+    setSort((current) => current?.key === key
+      ? { key, dir: current.dir === 'asc' ? 'desc' : 'asc' }
+      : { key, dir: 'asc' });
+  }
+
+  function applySort<T>(rows: T[], options: SortOption<T>[]): T[] {
+    const option = sort ? options.find((item) => item.key === sort.key) : undefined;
+    if (!sort || !option) return rows;
+    const factor = sort.dir === 'asc' ? 1 : -1;
+    return [...rows].sort((first, second) => {
+      const a = option.value(first);
+      const b = option.value(second);
+      if (a === b) return 0;
+      if (a === null || a === undefined || a === '') return 1;
+      if (b === null || b === undefined || b === '') return -1;
+      if (typeof a === 'number' && typeof b === 'number') return (a - b) * factor;
+      return String(a).localeCompare(String(b), 'pt-BR', { numeric: true, sensitivity: 'base' }) * factor;
+    });
+  }
+
+  function selectionFor(ids: number[]) {
+    const chosen = ids.filter((id) => selected.has(id));
+    return {
+      chosen,
+      all: ids.length > 0 && chosen.length === ids.length,
+      some: chosen.length > 0 && chosen.length < ids.length,
+      toggleAll: () => setSelected((current) => {
+        const next = new Set(current);
+        const everyOne = ids.length > 0 && ids.every((id) => next.has(id));
+        for (const id of ids) {
+          if (everyOne) next.delete(id);
+          else next.add(id);
+        }
+        return next;
+      }),
+      toggle: (id: number) => setSelected((current) => {
+        const next = new Set(current);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        return next;
+      }),
+    };
+  }
+
+  function clearSelection() {
+    setSelected(new Set());
+  }
+
+  function listToolbar<T>(options: SortOption<T>[], placeholder: string, chosenCount: number, bulkActions: React.ReactNode) {
+    return (
+      <ListToolbar
+        search={search}
+        onSearch={setSearch}
+        placeholder={placeholder}
+        options={options}
+        sort={sort}
+        onSort={setSort}
+        selectedCount={chosenCount}
+        onClearSelection={clearSelection}
+        busy={bulkBusy}
+      >
+        {bulkActions}
+      </ListToolbar>
+    );
+  }
+
+  function sortHeader(label: string, key: string) {
+    return <SortHeader label={label} sortKey={key} sort={sort} onSort={toggleSort} />;
+  }
+
+  // ---------- Exclusão em cascata (solicitações, serviços, postagens) ----------
+  async function openCascadeDelete(table: CascadeTable, ids: number[]) {
+    if (!ids.length) return;
     if (!supabase) {
       notifyError(new Error(supabaseConfigMessage));
       return;
     }
+    setCascade({ table, ids, report: null, loading: true, running: false, error: '' });
     try {
-      const { error } = await supabase.rpc('admin_delete_post', { p_post_id: post.id_postagem });
+      const { data: report, error } = await supabase.rpc('admin_exclusao_cascata', { p_tabela: table, p_ids: ids, p_executar: false });
       if (error) throw error;
-      setData((current) => ({
-        ...current,
-        posts: current.posts.filter((item) => item.id_postagem !== post.id_postagem),
-        postImages: current.postImages.filter((image) => image.fk_postagem !== post.id_postagem),
-      }));
-      notifySuccess('Postagem excluída.');
+      setCascade((current) => current && { ...current, report: (report ?? {}) as Record<string, number>, loading: false });
     } catch (error) {
-      notifyError(error);
+      const text = isMissingRpc(error)
+        ? `A função admin_exclusao_cascata ainda não existe no banco. Execute o script ${gestaoSqlFile} no SQL Editor do Supabase e tente de novo.`
+        : displayError(error);
+      setCascade((current) => current && { ...current, loading: false, error: text });
     }
   }
 
-  function selectPage(nextPage: PageKey) {
-    setPage(nextPage);
-    setSearch('');
-    setSidebarOpen(false);
+  async function confirmCascadeDelete() {
+    if (!cascade || !supabase) return;
+    setCascade({ ...cascade, running: true, error: '' });
+    try {
+      const { data: report, error } = await supabase.rpc('admin_exclusao_cascata', { p_tabela: cascade.table, p_ids: cascade.ids, p_executar: true });
+      if (error) throw error;
+      const removed = Object.values((report ?? {}) as Record<string, number>).reduce((sum, value) => sum + Number(value || 0), 0);
+      const meta = cascadeMeta[cascade.table];
+      setCascade(null);
+      clearSelection();
+      notifySuccess(`${cascade.ids.length} ${cascade.ids.length === 1 ? meta.singular : meta.plural} excluíd${meta.feminine ? 'a' : 'o'}${cascade.ids.length === 1 ? '' : 's'} (${removed} registros removidos no total).`);
+      await loadData(true);
+    } catch (error) {
+      setCascade((current) => current && { ...current, running: false, error: displayError(error) });
+    }
+  }
+
+  // ---------- Ações em massa ----------
+  async function bulkUpdate(table: 'servicos_profissional' | 'postagens', idColumn: string, ids: number[], values: Record<string, boolean>, message: string) {
+    if (!ids.length || !supabase) return;
+    setBulkBusy(true);
+    try {
+      const { data: updated, error } = await supabase.from(table).update(values).in(idColumn, ids).select(idColumn);
+      if (error) throw error;
+      if (!updated?.length) throw rlsBlockedError('atualizou', 'os itens selecionados');
+      clearSelection();
+      notifySuccess(message);
+      await loadData(true);
+    } catch (error) {
+      notifyError(error);
+    } finally {
+      setBulkBusy(false);
+    }
+  }
+
+  async function bulkDeleteCatalog(kind: 'trades' | 'functions', ids: number[]) {
+    if (!ids.length) return;
+    const isTrade = kind === 'trades';
+    const linked = isTrade ? data.functions.filter((item) => ids.includes(item.fk_oficio)).length : 0;
+    const question = isTrade
+      ? `Excluir ${ids.length} ofício(s)${linked ? ` e as ${linked} funções vinculadas a eles` : ''}?\n\nOfícios ou funções em uso por profissionais ou serviços não serão excluídos.`
+      : `Excluir ${ids.length} função(ões)?\n\nFunções em uso por profissionais ou serviços não serão excluídas.`;
+    if (!window.confirm(question)) return;
+    setBulkBusy(true);
+    const failures: string[] = [];
+    let okCount = 0;
+    for (const id of ids) {
+      try {
+        if (isTrade) {
+          const trade = data.trades.find((item) => item.id_oficio === id);
+          if (trade) await removeTrade(trade);
+        } else {
+          const item = data.functions.find((current) => current.id_funcao === id);
+          if (item) await removeFunction(item);
+        }
+        okCount += 1;
+      } catch (error) {
+        const name = isTrade
+          ? data.trades.find((item) => item.id_oficio === id)?.categoria
+          : data.functions.find((item) => item.id_funcao === id)?.funcao;
+        failures.push(`${name ?? `#${id}`}: ${describeDeleteError(error, isTrade ? 'este ofício' : 'esta função').message}`);
+      }
+    }
+    setBulkBusy(false);
+    clearSelection();
+    if (failures.length) {
+      notifyError(new Error(`${okCount ? `${okCount} excluído(s); ` : ''}${failures.length} não puderam ser excluídos. ${failures.slice(0, 2).join(' · ')}${failures.length > 2 ? ' …' : ''}`));
+    } else if (okCount) {
+      notifySuccess(`${okCount} ${isTrade ? 'ofício(s) excluído(s)' : 'função(ões) excluída(s)'}.`);
+    }
   }
 
   function renderOverview() {
@@ -1425,18 +1639,40 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
     );
   }
 
+  function requestClientName(request: Request) {
+    return userById.get(request.fk_usuario)?.nome ?? `Cliente #${request.fk_usuario}`;
+  }
+
+  function requestProfessionalName(request: Request) {
+    return userById.get(professionalById.get(request.fk_profissional)?.fk_usuario ?? -1)?.nome ?? `Profissional #${request.fk_profissional}`;
+  }
+
   function renderRequests() {
-    const visibleRequests = data.requests.filter((request) =>
+    const sortOptions: SortOption<Request>[] = [
+      { key: 'id', label: 'Número do pedido', value: (request) => request.id_solicitacao },
+      { key: 'client', label: 'Cliente', value: requestClientName },
+      { key: 'professional', label: 'Profissional', value: requestProfessionalName },
+      { key: 'date', label: 'Data', value: (request) => new Date(request.data_solicitacao).getTime() || null },
+      { key: 'value', label: 'Valor', value: (request) => request.valor_final === null ? null : Number(request.valor_final) },
+      { key: 'status', label: 'Status', value: (request) => statusName(request.fk_status) },
+    ];
+    const visibleRequests = applySort(data.requests.filter((request) =>
       matches(
         request.id_solicitacao,
-        userById.get(request.fk_usuario)?.nome,
-        userById.get(professionalById.get(request.fk_profissional)?.fk_usuario ?? -1)?.nome,
+        requestClientName(request),
+        requestProfessionalName(request),
         statusById.get(request.fk_status)?.status
       )
-    );
+    ), sortOptions);
+    const selection = selectionFor(visibleRequests.map((request) => request.id_solicitacao));
     return (
       <section className="panel data-panel">
         <PanelHeading eyebrow="OPERAÇÃO" title="Todas as solicitações" />
+        {listToolbar(sortOptions, 'Buscar por pedido, cliente, profissional ou status…', selection.chosen.length, (
+          <button className="danger-button" type="button" onClick={() => void openCascadeDelete('solicitacoes', selection.chosen)}>
+            <Icon name="trash" size={16} /> Excluir selecionadas
+          </button>
+        ))}
         {!requestStatuses.length && (
           <InlineNotice>
             O schema não retornou status classificados para solicitações. Os pedidos podem ser consultados, mas o status não pode ser alterado por aqui.
@@ -1445,7 +1681,10 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
         {visibleRequests.length ? (
           <div className="table-wrap">
             <table>
-              <thead><tr><th>Pedido</th><th>Cliente</th><th>Profissional</th><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
+              <thead><tr>
+                <SelectAllHeader checked={selection.all} indeterminate={selection.some} onChange={selection.toggleAll} />
+                {sortHeader('Pedido', 'id')}{sortHeader('Cliente', 'client')}{sortHeader('Profissional', 'professional')}{sortHeader('Data', 'date')}{sortHeader('Valor', 'value')}{sortHeader('Status', 'status')}<th>Ação</th>
+              </tr></thead>
               <tbody>
                 {visibleRequests.map((request) => {
                   const currentStatus = statusById.get(request.fk_status);
@@ -1455,16 +1694,18 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
                   const statusOptions = currentStatus && !requestStatuses.some((status) => status.id_status === request.fk_status)
                     ? [currentStatus, ...requestStatuses]
                     : requestStatuses;
+                  const isSelected = selected.has(request.id_solicitacao);
                   return (
-                    <tr key={request.id_solicitacao}>
+                    <tr key={request.id_solicitacao} className={isSelected ? 'is-selected' : ''}>
+                      <RowCheckbox checked={isSelected} label={`Selecionar pedido ${request.id_solicitacao}`} onChange={() => selection.toggle(request.id_solicitacao)} />
                       <td><b>#{request.id_solicitacao}</b></td>
                       <td><div className="user-identity">
-                        <UserAvatar name={client?.nome ?? `Cliente #${request.fk_usuario}`} photoUrl={client?.foto_perfil_url ?? null} />
-                        <span className="user-identity-copy"><b>{client?.nome ?? `Cliente #${request.fk_usuario}`}</b></span>
+                        <UserAvatar name={requestClientName(request)} photoUrl={client?.foto_perfil_url ?? null} />
+                        <span className="user-identity-copy"><b>{requestClientName(request)}</b></span>
                       </div></td>
                       <td><div className="user-identity">
-                        <UserAvatar name={professionalUser?.nome ?? `Profissional #${request.fk_profissional}`} photoUrl={professionalUser?.foto_perfil_url ?? null} />
-                        <span className="user-identity-copy"><b>{professionalUser?.nome ?? `Profissional #${request.fk_profissional}`}</b></span>
+                        <UserAvatar name={requestProfessionalName(request)} photoUrl={professionalUser?.foto_perfil_url ?? null} />
+                        <span className="user-identity-copy"><b>{requestProfessionalName(request)}</b></span>
                       </div></td>
                       <td>{dateTime(request.data_solicitacao)}</td>
                       <td>{currency(request.valor_final)}</td>
@@ -1481,6 +1722,9 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
                           </select>
                         ) : <StatusBadge label={statusName(request.fk_status)} />}
                       </td>
+                      <td className="row-actions">
+                        <button className="icon-button danger-icon" title="Excluir solicitação" aria-label={`Excluir solicitação ${request.id_solicitacao}`} onClick={() => void openCascadeDelete('solicitacoes', [request.id_solicitacao])}><Icon name="trash" size={16} /></button>
+                      </td>
                     </tr>
                   );
                 })}
@@ -1495,10 +1739,23 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
     );
   }
 
+  function serviceProfessionalName(service: Service) {
+    return userById.get(professionalById.get(service.fk_profissional)?.fk_usuario ?? -1)?.nome ?? `#${service.fk_profissional}`;
+  }
+
   function renderServices() {
-    const visibleServices = data.services.filter((service) =>
-      matches(service.titulo, service.descricao, service.id_servico_prof, service.fk_profissional, service.ativo ? 'ativo' : 'inativo')
-    );
+    const sortOptions: SortOption<Service>[] = [
+      { key: 'title', label: 'Título', value: (service) => service.titulo },
+      { key: 'professional', label: 'Profissional', value: serviceProfessionalName },
+      { key: 'execution', label: 'Execução', value: (service) => service.tipo_execucao },
+      { key: 'value', label: 'Valor', value: (service) => Number(service.valor) },
+      { key: 'status', label: 'Status', value: (service) => service.ativo ? 'Ativo' : 'Inativo' },
+      { key: 'created', label: 'Data de criação', value: (service) => service.data_criacao ? new Date(service.data_criacao).getTime() : null },
+    ];
+    const visibleServices = applySort(data.services.filter((service) =>
+      matches(service.titulo, service.descricao, service.id_servico_prof, serviceProfessionalName(service), service.tipo_execucao, service.ativo ? 'ativo' : 'inativo')
+    ), sortOptions);
+    const selection = selectionFor(visibleServices.map((service) => service.id_servico_prof));
     return (
       <section className="panel data-panel">
         <PanelHeading
@@ -1506,21 +1763,38 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
           title="Serviços profissionais"
           action={<button className="primary-button" onClick={() => setServiceForm(newServiceForm())}><Icon name="plus" size={18} /> Novo serviço</button>}
         />
+        {listToolbar(sortOptions, 'Buscar por serviço, profissional ou status…', selection.chosen.length, (
+          <>
+            <button className="secondary-button" type="button" onClick={() => void bulkUpdate('servicos_profissional', 'id_servico_prof', selection.chosen, { ativo: true }, 'Serviços ativados.')}>Ativar</button>
+            <button className="secondary-button" type="button" onClick={() => void bulkUpdate('servicos_profissional', 'id_servico_prof', selection.chosen, { ativo: false }, 'Serviços desativados.')}>Desativar</button>
+            <button className="danger-button" type="button" onClick={() => void openCascadeDelete('servicos_profissional', selection.chosen)}><Icon name="trash" size={16} /> Excluir selecionados</button>
+          </>
+        ))}
         {visibleServices.length ? (
           <div className="table-wrap">
             <table>
-              <thead><tr><th>Serviço</th><th>Profissional</th><th>Execução</th><th>Valor</th><th>Status</th><th>Ação</th></tr></thead>
+              <thead><tr>
+                <SelectAllHeader checked={selection.all} indeterminate={selection.some} onChange={selection.toggleAll} />
+                {sortHeader('Serviço', 'title')}{sortHeader('Profissional', 'professional')}{sortHeader('Execução', 'execution')}{sortHeader('Valor', 'value')}{sortHeader('Status', 'status')}<th>Ações</th>
+              </tr></thead>
               <tbody>
-                {visibleServices.map((service) => (
-                  <tr key={service.id_servico_prof}>
-                    <td><b>{service.titulo}</b><small>{service.descricao || 'Sem descrição'}</small></td>
-                    <td>{userById.get(professionalById.get(service.fk_profissional)?.fk_usuario ?? -1)?.nome ?? `#${service.fk_profissional}`}</td>
-                    <td>{service.tipo_execucao}<small>Carga {service.carga_servico.toLocaleLowerCase('pt-BR')}</small></td>
-                    <td>{currency(service.valor)}</td>
-                    <td><StatusBadge label={service.ativo ? 'Ativo' : 'Inativo'} positive={service.ativo} /></td>
-                    <td><button className="icon-button" aria-label={`Editar ${service.titulo}`} onClick={() => setServiceForm(editServiceForm(service))}><Icon name="edit" size={17} /></button></td>
-                  </tr>
-                ))}
+                {visibleServices.map((service) => {
+                  const isSelected = selected.has(service.id_servico_prof);
+                  return (
+                    <tr key={service.id_servico_prof} className={isSelected ? 'is-selected' : ''}>
+                      <RowCheckbox checked={isSelected} label={`Selecionar ${service.titulo}`} onChange={() => selection.toggle(service.id_servico_prof)} />
+                      <td><b>{service.titulo}</b><small>{service.descricao || 'Sem descrição'}</small></td>
+                      <td>{serviceProfessionalName(service)}</td>
+                      <td>{service.tipo_execucao}<small>Carga {service.carga_servico.toLocaleLowerCase('pt-BR')}</small></td>
+                      <td>{currency(service.valor)}</td>
+                      <td><StatusBadge label={service.ativo ? 'Ativo' : 'Inativo'} positive={service.ativo} /></td>
+                      <td className="row-actions">
+                        <button className="icon-button" title="Editar serviço" aria-label={`Editar ${service.titulo}`} onClick={() => setServiceForm(editServiceForm(service))}><Icon name="edit" size={17} /></button>
+                        <button className="icon-button danger-icon" title="Excluir serviço" aria-label={`Excluir ${service.titulo}`} onClick={() => void openCascadeDelete('servicos_profissional', [service.id_servico_prof])}><Icon name="trash" size={16} /></button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1650,9 +1924,16 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
   }
 
   function renderTrades() {
-    const visibleTrades = data.trades.filter((trade) =>
-      matches(trade.categoria, trade.id_oficio, trade.cod_cor)
-    );
+    const sortOptions: SortOption<Trade>[] = [
+      { key: 'name', label: 'Categoria', value: (trade) => trade.categoria },
+      { key: 'id', label: 'ID', value: (trade) => trade.id_oficio },
+      { key: 'color', label: 'Cor', value: (trade) => trade.cor },
+      { key: 'functions', label: 'Quantidade de funções', value: (trade) => data.functions.filter((item) => item.fk_oficio === trade.id_oficio).length },
+    ];
+    const visibleTrades = applySort(data.trades.filter((trade) =>
+      matches(trade.categoria, trade.id_oficio, trade.cor, trade.cod_cor)
+    ), sortOptions);
+    const selection = selectionFor(visibleTrades.map((trade) => trade.id_oficio));
     return (
       <section className="panel data-panel">
         <PanelHeading
@@ -1660,22 +1941,34 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
           title="Ofícios oferecidos"
           action={<button className="primary-button" onClick={() => setTradeForm(newTradeForm())}><Icon name="plus" size={18} /> Novo ofício</button>}
         />
+        {listToolbar(sortOptions, 'Buscar por categoria, cor ou ID…', selection.chosen.length, (
+          <button className="danger-button" type="button" onClick={() => void bulkDeleteCatalog('trades', selection.chosen)}><Icon name="trash" size={16} /> Excluir selecionados</button>
+        ))}
         {visibleTrades.length ? (
           <div className="table-wrap">
             <table>
-              <thead><tr><th>Categoria</th><th>Cor</th><th>Código</th><th>Ação</th></tr></thead>
+              <thead><tr>
+                <SelectAllHeader checked={selection.all} indeterminate={selection.some} onChange={selection.toggleAll} />
+                {sortHeader('Categoria', 'name')}{sortHeader('Cor', 'color')}<th>Código</th>{sortHeader('Funções', 'functions')}<th>Ações</th>
+              </tr></thead>
               <tbody>
-                {visibleTrades.map((trade) => (
-                  <tr key={trade.id_oficio}>
-                    <td><span className="trade-name"><i style={{ backgroundColor: trade.cod_cor || trade.cor }} /> <b>{trade.categoria}</b></span><small>ID #{trade.id_oficio}</small></td>
-                    <td>{trade.cor}</td>
-                    <td>{trade.cod_cor ?? '—'}</td>
-                    <td className="row-actions">
-                      <button className="icon-button" aria-label={`Editar ${trade.categoria}`} onClick={() => setTradeForm(editTradeForm(trade))}><Icon name="edit" size={17} /></button>
-                      <button className="icon-button danger-icon" aria-label={`Excluir ${trade.categoria}`} onClick={() => void deleteTrade(trade)}><Icon name="close" size={17} /></button>
-                    </td>
-                  </tr>
-                ))}
+                {visibleTrades.map((trade) => {
+                  const isSelected = selected.has(trade.id_oficio);
+                  const functionCount = data.functions.filter((item) => item.fk_oficio === trade.id_oficio).length;
+                  return (
+                    <tr key={trade.id_oficio} className={isSelected ? 'is-selected' : ''}>
+                      <RowCheckbox checked={isSelected} label={`Selecionar ${trade.categoria}`} onChange={() => selection.toggle(trade.id_oficio)} />
+                      <td><span className="trade-name"><i style={{ backgroundColor: trade.cod_cor || trade.cor }} /> <b>{trade.categoria}</b></span><small>ID #{trade.id_oficio}</small></td>
+                      <td>{trade.cor}</td>
+                      <td>{trade.cod_cor ?? '—'}</td>
+                      <td>{functionCount}</td>
+                      <td className="row-actions">
+                        <button className="icon-button" title="Editar ofício" aria-label={`Editar ${trade.categoria}`} onClick={() => setTradeForm(editTradeForm(trade))}><Icon name="edit" size={17} /></button>
+                        <button className="icon-button danger-icon" title="Excluir ofício" aria-label={`Excluir ${trade.categoria}`} onClick={() => void deleteTrade(trade)}><Icon name="trash" size={16} /></button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1686,9 +1979,17 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
   }
 
   function renderFunctions() {
-    const visibleFunctions = data.functions.filter((item) =>
-      matches(item.funcao, item.descricao, item.fk_oficio, item.img_funcao, tradeById.get(item.fk_oficio)?.categoria)
-    );
+    const tradeName = (item: ProfessionalFunction) => tradeById.get(item.fk_oficio)?.categoria ?? `Ofício #${item.fk_oficio}`;
+    const sortOptions: SortOption<ProfessionalFunction>[] = [
+      { key: 'name', label: 'Função', value: (item) => item.funcao },
+      { key: 'trade', label: 'Ofício', value: tradeName },
+      { key: 'id', label: 'ID', value: (item) => item.id_funcao },
+      { key: 'image', label: 'Imagem', value: (item) => item.img_funcao ? 'Cadastrada' : 'Sem imagem' },
+    ];
+    const visibleFunctions = applySort(data.functions.filter((item) =>
+      matches(item.funcao, item.descricao, item.id_funcao, tradeName(item))
+    ), sortOptions);
+    const selection = selectionFor(visibleFunctions.map((item) => item.id_funcao));
     return (
       <section className="panel data-panel">
         <PanelHeading
@@ -1696,23 +1997,34 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
           title="Funções profissionais"
           action={<button className="primary-button" onClick={() => setFunctionForm(newFunctionForm(data.trades))}><Icon name="plus" size={18} /> Nova função</button>}
         />
+        {listToolbar(sortOptions, 'Buscar por função, ofício ou descrição…', selection.chosen.length, (
+          <button className="danger-button" type="button" onClick={() => void bulkDeleteCatalog('functions', selection.chosen)}><Icon name="trash" size={16} /> Excluir selecionadas</button>
+        ))}
         {visibleFunctions.length ? (
           <div className="table-wrap">
             <table>
-              <thead><tr><th>Função</th><th>Ofício</th><th>Descrição</th><th>Imagem</th><th>Ação</th></tr></thead>
+              <thead><tr>
+                <SelectAllHeader checked={selection.all} indeterminate={selection.some} onChange={selection.toggleAll} />
+                {sortHeader('Função', 'name')}{sortHeader('Ofício', 'trade')}<th>Descrição</th>{sortHeader('Imagem', 'image')}<th>Ações</th>
+              </tr></thead>
               <tbody>
-                {visibleFunctions.map((item) => (
-                  <tr key={item.id_funcao}>
-                    <td><b>{item.funcao}</b><small>ID #{item.id_funcao}</small></td>
-                    <td>{tradeById.get(item.fk_oficio)?.categoria ?? `Ofício #${item.fk_oficio}`}</td>
-                    <td>{item.descricao || 'Sem descrição'}</td>
-                    <td>{item.img_funcao ? 'Cadastrada' : '—'}</td>
-                    <td className="row-actions">
-                      <button className="icon-button" aria-label={`Editar ${item.funcao}`} onClick={() => setFunctionForm(editFunctionForm(item))}><Icon name="edit" size={17} /></button>
-                      <button className="icon-button danger-icon" aria-label={`Excluir ${item.funcao}`} onClick={() => void deleteFunction(item)}><Icon name="close" size={17} /></button>
-                    </td>
-                  </tr>
-                ))}
+                {visibleFunctions.map((item) => {
+                  const isSelected = selected.has(item.id_funcao);
+                  const imageUrl = item.img_funcao ? safeHttpUrl(item.img_funcao) : null;
+                  return (
+                    <tr key={item.id_funcao} className={isSelected ? 'is-selected' : ''}>
+                      <RowCheckbox checked={isSelected} label={`Selecionar ${item.funcao}`} onChange={() => selection.toggle(item.id_funcao)} />
+                      <td><b>{item.funcao}</b><small>ID #{item.id_funcao}</small></td>
+                      <td>{tradeName(item)}</td>
+                      <td>{item.descricao || 'Sem descrição'}</td>
+                      <td>{imageUrl ? <img className="function-thumb" src={imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" /> : item.img_funcao ? 'Cadastrada' : '—'}</td>
+                      <td className="row-actions">
+                        <button className="icon-button" title="Editar função" aria-label={`Editar ${item.funcao}`} onClick={() => setFunctionForm(editFunctionForm(item))}><Icon name="edit" size={17} /></button>
+                        <button className="icon-button danger-icon" title="Excluir função" aria-label={`Excluir ${item.funcao}`} onClick={() => void deleteFunction(item)}><Icon name="trash" size={16} /></button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1722,42 +2034,64 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
     );
   }
 
+  function postAuthor(post: Post) {
+    if (post.tipo_autor === 'empresa') {
+      const businessGroup = post.fk_grupo_empresa ? businessGroupById.get(post.fk_grupo_empresa) : undefined;
+      return businessGroup?.nome_empresa ?? `Empresa #${post.fk_grupo_empresa ?? post.fk_perfil}`;
+    }
+    const professional = professionalByProfileId.get(post.fk_perfil);
+    return userById.get(professional?.fk_usuario ?? -1)?.nome ?? `Profissional · Perfil #${post.fk_perfil}`;
+  }
+
   function renderPosts() {
-    const visiblePosts = data.posts.filter((post) =>
+    const sortOptions: SortOption<Post>[] = [
+      { key: 'date', label: 'Data', value: (post) => new Date(post.data_postagem).getTime() || null },
+      { key: 'author', label: 'Autor', value: postAuthor },
+      { key: 'content', label: 'Conteúdo', value: (post) => post.conteudo ?? '' },
+      { key: 'status', label: 'Status', value: (post) => post.arquivado ? 'Arquivada' : 'Publicada' },
+      { key: 'media', label: 'Quantidade de mídias', value: (post) => postImagesById.get(post.id_postagem)?.length ?? 0 },
+    ];
+    const visiblePosts = applySort(data.posts.filter((post) =>
       matches(
         post.id_postagem,
         post.conteudo,
+        postAuthor(post),
         post.tipo_autor,
-        post.fk_perfil,
-        post.fk_grupo_empresa,
         post.arquivado ? 'arquivada' : 'publicada'
       )
-    );
+    ), sortOptions);
+    const selection = selectionFor(visiblePosts.map((post) => post.id_postagem));
     return (
       <section className="panel data-panel">
         <PanelHeading eyebrow="CONTEÚDO" title="Postagens publicadas" />
+        {listToolbar(sortOptions, 'Buscar por texto, autor ou status…', selection.chosen.length, (
+          <>
+            <button className="secondary-button" type="button" onClick={() => void bulkUpdate('postagens', 'id_postagem', selection.chosen, { arquivado: true }, 'Postagens arquivadas.')}>Arquivar</button>
+            <button className="secondary-button" type="button" onClick={() => void bulkUpdate('postagens', 'id_postagem', selection.chosen, { arquivado: false }, 'Postagens publicadas novamente.')}>Publicar</button>
+            <button className="danger-button" type="button" onClick={() => void openCascadeDelete('postagens', selection.chosen)}><Icon name="trash" size={16} /> Excluir selecionadas</button>
+          </>
+        ))}
         {visiblePosts.length ? (
           <div className="table-wrap">
             <table>
-              <thead><tr><th>Postagem</th><th>Autor</th><th>Data</th><th>Status</th><th>Ação</th></tr></thead>
+              <thead><tr>
+                <SelectAllHeader checked={selection.all} indeterminate={selection.some} onChange={selection.toggleAll} />
+                {sortHeader('Postagem', 'content')}{sortHeader('Autor', 'author')}{sortHeader('Data', 'date')}{sortHeader('Status', 'status')}<th>Ações</th>
+              </tr></thead>
               <tbody>
                 {visiblePosts.map((post) => {
-                  const professional = professionalByProfileId.get(post.fk_perfil);
-                  const businessGroup = post.fk_grupo_empresa
-                    ? businessGroupById.get(post.fk_grupo_empresa)
-                    : undefined;
-                  const author = post.tipo_autor === 'empresa'
-                    ? businessGroup?.nome_empresa ?? `Empresa #${post.fk_grupo_empresa ?? post.fk_perfil}`
-                    : userById.get(professional?.fk_usuario ?? -1)?.nome ?? `Profissional · Perfil #${post.fk_perfil}`;
+                  const isSelected = selected.has(post.id_postagem);
+                  const images = postImagesById.get(post.id_postagem) ?? [];
                   return (
-                    <tr key={post.id_postagem}>
+                    <tr key={post.id_postagem} className={isSelected ? 'is-selected' : ''}>
+                      <RowCheckbox checked={isSelected} label={`Selecionar postagem ${post.id_postagem}`} onChange={() => selection.toggle(post.id_postagem)} />
                       <td>
                         <span className="post-content" title={post.conteudo ?? 'Sem texto'}>
-                          {post.conteudo || (postImagesById.get(post.id_postagem)?.length ? 'Publicação com mídia' : 'Publicação sem texto')}
+                          {post.conteudo || (images.length ? 'Publicação com mídia' : 'Publicação sem texto')}
                         </span>
-                        {postImagesById.get(post.id_postagem)?.length ? (
+                        {images.length ? (
                           <div className="post-media-links">
-                            {postImagesById.get(post.id_postagem)?.map((image, index) => {
+                            {images.map((image, index) => {
                               const url = safeHttpUrl(image.url);
                               return url
                                 ? <a href={url} key={`${image.url}-${index}`} target="_blank" rel="noopener noreferrer">Abrir mídia {index + 1}</a>
@@ -1767,12 +2101,12 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
                         ) : null}
                         <small>ID #{post.id_postagem}</small>
                       </td>
-                      <td>{author}</td>
+                      <td>{postAuthor(post)}</td>
                       <td>{dateTime(post.data_postagem)}</td>
                       <td><StatusBadge label={post.arquivado ? 'Arquivada' : 'Publicada'} positive={!post.arquivado} /></td>
                       <td className="row-actions">
-                        <button className="icon-button" aria-label={`Editar postagem ${post.id_postagem}`} onClick={() => setPostForm({ id: post.id_postagem, conteudo: post.conteudo ?? '', arquivado: post.arquivado })}><Icon name="edit" size={17} /></button>
-                        <button className="icon-button danger-icon" aria-label={`Excluir postagem ${post.id_postagem}`} onClick={() => void deletePost(post)}><Icon name="close" size={17} /></button>
+                        <button className="icon-button" title="Editar postagem" aria-label={`Editar postagem ${post.id_postagem}`} onClick={() => setPostForm({ id: post.id_postagem, conteudo: post.conteudo ?? '', arquivado: post.arquivado })}><Icon name="edit" size={17} /></button>
+                        <button className="icon-button danger-icon" title="Excluir postagem" aria-label={`Excluir postagem ${post.id_postagem}`} onClick={() => void openCascadeDelete('postagens', [post.id_postagem])}><Icon name="trash" size={16} /></button>
                       </td>
                     </tr>
                   );
@@ -1946,6 +2280,7 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
         return renderUnavailable(page);
       case 'notifications': return renderNotifications();
       case 'admins': return <AdminAccountsPanel search={search} onSuccess={notifySuccess} onError={notifyError} />;
+      case 'queries': return <QueriesPanel onSuccess={notifySuccess} onError={notifyError} />;
       default:
         return null;
     }
@@ -1997,7 +2332,7 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
           <button className="mobile-menu" aria-label="Abrir menu" onClick={() => setSidebarOpen(true)}><Icon name="menu" /></button>
           <div className="breadcrumb"><span>ConsertaJá</span><i>/</i><b>{title.title}</b></div>
           <div className="topbar-actions">
-            {page !== 'overview' && (
+            {page !== 'overview' && page !== 'queries' && !listPages.has(page) && (
               <label className="search-box">
                 <Icon name="search" size={18} />
                 <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar..." aria-label="Buscar nesta página" />
@@ -2113,6 +2448,44 @@ function DashboardApp({ adminEmail, onSignOut, theme, onToggleTheme }: { adminEm
           statuses={statusById}
           onClose={() => setDetailsUserId(null)}
         />
+      )}
+
+      {cascade && (
+        <Modal title={`Excluir ${cascade.ids.length === 1 ? cascadeMeta[cascade.table].singular : `${cascade.ids.length} ${cascadeMeta[cascade.table].plural}`}`} onClose={() => !cascade.running && setCascade(null)}>
+          <div className="cascade-body">
+            {cascade.loading ? (
+              <div className="cascade-loading"><span className="spinner" /> Verificando registros ligados…</div>
+            ) : cascade.report ? (
+              <>
+                <div className="cascade-warning">
+                  <Icon name="alert" size={20} />
+                  <span>
+                    <b>Esta exclusão é permanente e não pode ser desfeita.</b>
+                    Além {cascade.ids.length === 1 ? `d${cascadeMeta[cascade.table].feminine ? 'a' : 'o'} ${cascadeMeta[cascade.table].singular}` : `d${cascadeMeta[cascade.table].feminine ? 'as' : 'os'} ${cascadeMeta[cascade.table].plural}`} selecionad{cascadeMeta[cascade.table].feminine ? 'a' : 'o'}{cascade.ids.length === 1 ? '' : 's'}, os registros ligados abaixo também serão apagados do Supabase.
+                  </span>
+                </div>
+                <ul className="cascade-list">
+                  {Object.entries(cascade.report)
+                    .sort(([first], [second]) => (first === cascade.table ? -1 : second === cascade.table ? 1 : first.localeCompare(second)))
+                    .map(([table, count]) => (
+                      <li key={table} className={table === cascade.table ? 'main' : ''}>
+                        <span><b>{tableLabels[table] ?? table}</b><code>{table}</code></span>
+                        <strong>{count}</strong>
+                      </li>
+                    ))}
+                </ul>
+                <p className="modal-intro">Registros que apenas apontam para estes itens de forma opcional (como notificações) são mantidos, só perdem o vínculo.</p>
+              </>
+            ) : null}
+            {cascade.error && <div className="auth-error" role="alert">{cascade.error}</div>}
+          </div>
+          <div className="modal-actions">
+            <button className="secondary-button" type="button" onClick={() => setCascade(null)} disabled={cascade.running}>Cancelar</button>
+            <button className="danger-button solid" type="button" onClick={() => void confirmCascadeDelete()} disabled={cascade.loading || cascade.running || !cascade.report}>
+              <Icon name="trash" size={16} /> {cascade.running ? 'Excluindo…' : 'Excluir definitivamente'}
+            </button>
+          </div>
+        </Modal>
       )}
 
       {toast && <div className={`toast-message ${toast.kind}`} role="status">{toast.kind === 'success' ? '✓' : '!'} {toast.text}<button onClick={() => setToast(null)} aria-label="Fechar aviso"><Icon name="close" size={15} /></button></div>}
@@ -2915,19 +3288,23 @@ type AdminCreateForm = { email: string; password: string; confirm: string };
 const adminFunctionName = 'admin-contas';
 
 class AdminFunctionMissingError extends Error {
-  constructor() {
-    super(`A Edge Function "${adminFunctionName}" não respondeu. Verifique se ela foi publicada no Supabase.`);
+  constructor(functionName = adminFunctionName) {
+    super(`A Edge Function "${functionName}" não respondeu. Verifique se ela foi publicada no Supabase.`);
     this.name = 'AdminFunctionMissingError';
   }
 }
 
 async function callAdminFunction<T>(body: Record<string, unknown>): Promise<T> {
+  return callEdgeFunction<T>(adminFunctionName, body);
+}
+
+async function callEdgeFunction<T>(functionName: string, body: Record<string, unknown>): Promise<T> {
   if (!supabase) throw new Error(supabaseConfigMessage);
-  const { data, error } = await supabase.functions.invoke(adminFunctionName, { body });
+  const { data, error } = await supabase.functions.invoke(functionName, { body });
   if (error) {
     const context = (error as { context?: unknown }).context;
     if (context instanceof Response) {
-      if (context.status === 404) throw new AdminFunctionMissingError();
+      if (context.status === 404) throw new AdminFunctionMissingError(functionName);
       try {
         const payload = await context.clone().json();
         if (payload && typeof payload.error === 'string') throw new Error(payload.error);
@@ -2935,7 +3312,7 @@ async function callAdminFunction<T>(body: Record<string, unknown>): Promise<T> {
         if (parseError instanceof Error && parseError.name !== 'SyntaxError') throw parseError;
       }
     }
-    if (error.name === 'FunctionsFetchError' || error.name === 'FunctionsRelayError') throw new AdminFunctionMissingError();
+    if (error.name === 'FunctionsFetchError' || error.name === 'FunctionsRelayError') throw new AdminFunctionMissingError(functionName);
     throw new Error(displayError(error));
   }
   if (data && typeof data === 'object' && 'error' in data && typeof (data as { error: unknown }).error === 'string') {
@@ -3176,6 +3553,358 @@ function ModalActions({ onCancel, saving }: { onCancel: () => void; saving: bool
     <div className="modal-actions">
       <button className="secondary-button" type="button" onClick={onCancel} disabled={saving}>Cancelar</button>
       <button className="primary-button" type="submit" disabled={saving}>{saving ? 'Salvando…' : 'Salvar alterações'}</button>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Barra de busca/ordenação/seleção das listas
+// ---------------------------------------------------------------------------
+
+function ListToolbar<T>({
+  search,
+  onSearch,
+  placeholder,
+  options,
+  sort,
+  onSort,
+  selectedCount,
+  onClearSelection,
+  busy,
+  children,
+}: {
+  search: string;
+  onSearch: (value: string) => void;
+  placeholder: string;
+  options: SortOption<T>[];
+  sort: SortState | null;
+  onSort: (value: SortState | null) => void;
+  selectedCount: number;
+  onClearSelection: () => void;
+  busy: boolean;
+  children: React.ReactNode;
+}) {
+  const activeKey = sort && options.some((option) => option.key === sort.key) ? sort.key : '';
+  return (
+    <div className="list-toolbar">
+      <div className="list-toolbar-row">
+        <label className="list-search">
+          <Icon name="search" size={18} />
+          <input value={search} onChange={(event) => onSearch(event.target.value)} placeholder={placeholder} aria-label="Buscar nesta lista" />
+          {search && <button type="button" onClick={() => onSearch('')} aria-label="Limpar busca"><Icon name="close" size={15} /></button>}
+        </label>
+        <div className="list-sort">
+          <Icon name="sort" size={17} />
+          <select
+            aria-label="Ordenar por"
+            value={activeKey}
+            onChange={(event) => onSort(event.target.value ? { key: event.target.value, dir: sort?.dir ?? 'asc' } : null)}
+          >
+            <option value="">Ordem padrão</option>
+            {options.map((option) => <option key={option.key} value={option.key}>{option.label}</option>)}
+          </select>
+          <button
+            type="button"
+            className="sort-direction"
+            disabled={!activeKey}
+            onClick={() => sort && onSort({ key: sort.key, dir: sort.dir === 'asc' ? 'desc' : 'asc' })}
+            title={sort?.dir === 'desc' ? 'Decrescente (clique para inverter)' : 'Crescente (clique para inverter)'}
+            aria-label="Inverter ordem"
+          >
+            {sort?.dir === 'desc' ? '↓ Z–A' : '↑ A–Z'}
+          </button>
+        </div>
+      </div>
+      {selectedCount > 0 && (
+        <div className="bulk-bar" role="region" aria-label="Ações para os itens selecionados">
+          <span><b>{selectedCount}</b> {selectedCount === 1 ? 'item selecionado' : 'itens selecionados'}</span>
+          <div className="bulk-actions">
+            <fieldset disabled={busy}>{children}</fieldset>
+            <button type="button" className="text-action" onClick={onClearSelection}>Limpar seleção</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SortHeader({ label, sortKey, sort, onSort }: { label: string; sortKey: string; sort: SortState | null; onSort: (key: string) => void }) {
+  const active = sort?.key === sortKey;
+  return (
+    <th aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}>
+      <button type="button" className={`sort-th ${active ? 'active' : ''}`} onClick={() => onSort(sortKey)}>
+        {label}<span aria-hidden="true">{active ? (sort.dir === 'asc' ? '▲' : '▼') : '↕'}</span>
+      </button>
+    </th>
+  );
+}
+
+function SelectAllHeader({ checked, indeterminate, onChange }: { checked: boolean; indeterminate: boolean; onChange: () => void }) {
+  return (
+    <th className="check-cell">
+      <input
+        type="checkbox"
+        aria-label="Selecionar todos os itens exibidos"
+        checked={checked}
+        ref={(element) => { if (element) element.indeterminate = indeterminate; }}
+        onChange={onChange}
+      />
+    </th>
+  );
+}
+
+function RowCheckbox({ checked, label, onChange }: { checked: boolean; label: string; onChange: () => void }) {
+  return <td className="check-cell"><input type="checkbox" aria-label={label} checked={checked} onChange={onChange} /></td>;
+}
+
+// ---------------------------------------------------------------------------
+// Consultas SQL salvas no Supabase (Edge Function admin-consultas)
+// ---------------------------------------------------------------------------
+
+interface SavedQuery {
+  id: string;
+  name: string;
+  description: string | null;
+  visibility: string;
+  inserted_at: string | null;
+  updated_at: string | null;
+  favorite?: boolean;
+  owner?: { username?: string } | null;
+}
+
+type QueryResult = { rows: Record<string, unknown>[]; raw: unknown; ms: number };
+
+const queriesFunctionName = 'admin-consultas';
+const writeSqlPattern = /\b(insert|update|delete|truncate|drop|alter|create|grant|revoke|comment|vacuum|reindex|call|do)\b/i;
+const visibilityLabels: Record<string, string> = { user: 'Privada', project: 'Projeto', org: 'Organização', public: 'Pública' };
+
+function QueriesPanel({ onSuccess, onError }: { onSuccess: (text: string) => void; onError: (error: unknown) => void }) {
+  const [queries, setQueries] = useState<SavedQuery[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [setup, setSetup] = useState<'missing' | 'token' | null>(null);
+  const [setupMessage, setSetupMessage] = useState('');
+  const [listError, setListError] = useState('');
+  const [filter, setFilter] = useState('');
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [original, setOriginal] = useState('');
+  const [sql, setSql] = useState('');
+  const [loadingSql, setLoadingSql] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<QueryResult | null>(null);
+  const [runError, setRunError] = useState('');
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setListError('');
+    try {
+      const response = await callEdgeFunction<{ snippets?: SavedQuery[]; setup_required?: boolean; error?: string }>(queriesFunctionName, { action: 'list' });
+      if (response.setup_required) {
+        setSetup('token');
+        setSetupMessage(response.error ?? '');
+        return;
+      }
+      setSetup(null);
+      setQueries((response.snippets ?? []).slice().sort((first, second) => first.name.localeCompare(second.name, 'pt-BR')));
+    } catch (error) {
+      if (error instanceof AdminFunctionMissingError) setSetup('missing');
+      else if (/SUPABASE_ACCESS_TOKEN/.test(displayError(error))) {
+        setSetup('token');
+        setSetupMessage(displayError(error));
+      } else setListError(displayError(error));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { void load(); }, [load]);
+
+  async function openQuery(query: SavedQuery) {
+    setActiveId(query.id);
+    setResult(null);
+    setRunError('');
+    setLoadingSql(true);
+    try {
+      const response = await callEdgeFunction<{ snippet: { content?: { sql?: string } } }>(queriesFunctionName, { action: 'get', id: query.id });
+      const text = response.snippet?.content?.sql ?? '';
+      setOriginal(text);
+      setSql(text);
+    } catch (error) {
+      setRunError(displayError(error));
+      setOriginal('');
+      setSql('');
+    } finally {
+      setLoadingSql(false);
+    }
+  }
+
+  function newQuery() {
+    setActiveId('new');
+    setOriginal('');
+    setSql('');
+    setResult(null);
+    setRunError('');
+  }
+
+  async function run() {
+    const query = sql.trim();
+    if (!query) return;
+    if (writeSqlPattern.test(query) && !window.confirm('Esta consulta pode ALTERAR ou APAGAR dados do banco de produção.\n\nDeseja executá-la mesmo assim?')) return;
+    setRunning(true);
+    setRunError('');
+    setResult(null);
+    try {
+      const response = await callEdgeFunction<QueryResult & { setup_required?: boolean; error?: string }>(queriesFunctionName, { action: 'run', query });
+      if (response.setup_required) throw new Error(response.error ?? 'Configure o segredo SUPABASE_ACCESS_TOKEN.');
+      setResult({ rows: response.rows ?? [], raw: response.raw, ms: response.ms });
+      onSuccess(`Consulta executada${response.rows?.length ? ` · ${response.rows.length} linha(s)` : ''}.`);
+    } catch (error) {
+      setRunError(displayError(error));
+      onError(error);
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  async function copySql() {
+    try {
+      await navigator.clipboard.writeText(sql);
+      onSuccess('SQL copiado.');
+    } catch (error) {
+      onError(error);
+    }
+  }
+
+  const term = filter.trim().toLocaleLowerCase('pt-BR');
+  const visible = queries.filter((query) => !term || `${query.name} ${query.description ?? ''}`.toLocaleLowerCase('pt-BR').includes(term));
+  const active = queries.find((query) => query.id === activeId);
+  const projectRef = supabaseUrl ? new URL(supabaseUrl).hostname.split('.')[0] : 'SEU_PROJECT_REF';
+  const columns = result ? Array.from(new Set(result.rows.slice(0, 200).flatMap((row) => Object.keys(row ?? {})))) : [];
+  const shownRows = result ? result.rows.slice(0, 500) : [];
+
+  if (setup) {
+    return (
+      <section className="panel data-panel">
+        <PanelHeading eyebrow="BANCO DE DADOS" title="Consultas salvas" />
+        <div className="admin-setup">
+          <span className="admin-setup-icon"><Icon name="database" size={22} /></span>
+          <div>
+            <b>{setup === 'missing' ? 'Falta publicar a função de consultas no Supabase' : 'Falta configurar o token de acesso do Supabase'}</b>
+            <p>
+              As consultas salvas no SQL Editor ficam na plataforma do Supabase, não no banco. Para listá-las e executá-las com
+              segurança, o painel usa a Edge Function <code>{queriesFunctionName}</code> com um token pessoal guardado como segredo
+              (ele nunca chega ao navegador). Gere o token em <code>supabase.com/dashboard/account/tokens</code> e rode na pasta do projeto:
+            </p>
+            {setupMessage && <p className="setup-detail">{setupMessage}</p>}
+            <pre>{`npx supabase login\nnpx supabase secrets set SUPABASE_ACCESS_TOKEN=sbp_SEU_TOKEN --project-ref ${projectRef}\nnpx supabase functions deploy ${queriesFunctionName} --project-ref ${projectRef}`}</pre>
+            <button className="primary-button" type="button" onClick={() => void load()}><Icon name="refresh" size={16} /> Tentar novamente</button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <div className="queries-layout">
+      <section className="panel queries-list">
+        <PanelHeading
+          eyebrow="SQL EDITOR"
+          title="Consultas salvas"
+          action={<button className="icon-button" type="button" title="Atualizar lista" aria-label="Atualizar lista" onClick={() => void load()} disabled={loading}><Icon name="refresh" size={16} /></button>}
+        />
+        <label className="list-search">
+          <Icon name="search" size={17} />
+          <input value={filter} onChange={(event) => setFilter(event.target.value)} placeholder="Filtrar consultas…" aria-label="Filtrar consultas" />
+        </label>
+        <button className={`query-item new ${activeId === 'new' ? 'active' : ''}`} type="button" onClick={newQuery}>
+          <Icon name="plus" size={17} /><span><b>Nova consulta</b><small>Escreva um SQL avulso</small></span>
+        </button>
+        {listError && <InlineNotice>{listError}</InlineNotice>}
+        {loading ? (
+          <div className="cascade-loading"><span className="spinner" /> Carregando consultas…</div>
+        ) : visible.length ? (
+          <div className="query-items">
+            {visible.map((query) => (
+              <button key={query.id} type="button" className={`query-item ${activeId === query.id ? 'active' : ''}`} onClick={() => void openQuery(query)}>
+                <span className="query-icon">SQL</span>
+                <span>
+                  <b>{query.name}</b>
+                  <small>{query.description || `${visibilityLabels[query.visibility] ?? query.visibility} · ${relativeTime(query.updated_at)}`}</small>
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <EmptyState title="Nenhuma consulta encontrada" description={term ? 'Ajuste o filtro.' : 'Salve consultas no SQL Editor do Supabase para vê-las aqui.'} />
+        )}
+      </section>
+
+      <section className="panel queries-editor">
+        {activeId ? (
+          <>
+            <PanelHeading
+              eyebrow={active ? `${visibilityLabels[active.visibility] ?? active.visibility}${active.owner?.username ? ` · ${active.owner.username}` : ''}` : 'CONSULTA AVULSA'}
+              title={active?.name ?? 'Nova consulta'}
+              action={
+                <div className="admin-heading-actions">
+                  <button className="secondary-button" type="button" onClick={() => void copySql()} disabled={!sql}><Icon name="copy" size={15} /> Copiar</button>
+                  {active && sql !== original && <button className="secondary-button" type="button" onClick={() => setSql(original)}>Desfazer edição</button>}
+                  <button className="primary-button" type="button" onClick={() => void run()} disabled={running || loadingSql || !sql.trim()}>
+                    <Icon name="play" size={15} /> {running ? 'Executando…' : 'Executar'}
+                  </button>
+                </div>
+              }
+            />
+            {active?.description && <p className="modal-intro">{active.description}</p>}
+            {loadingSql ? (
+              <div className="cascade-loading"><span className="spinner" /> Carregando SQL…</div>
+            ) : (
+              <textarea
+                className="sql-editor"
+                spellCheck={false}
+                value={sql}
+                onChange={(event) => setSql(event.target.value)}
+                onKeyDown={(event) => {
+                  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                    event.preventDefault();
+                    void run();
+                  }
+                }}
+                placeholder="select * from public.usuarios limit 20;"
+                aria-label="SQL da consulta"
+              />
+            )}
+            <p className="helper-text">Ctrl + Enter executa. As edições aqui não alteram a consulta salva no Supabase. Comandos que alteram dados pedem confirmação.</p>
+            {runError && <div className="auth-error" role="alert">{runError}</div>}
+            {result && (
+              <div className="query-result">
+                <div className="query-result-head">
+                  <b>{result.rows.length ? `${result.rows.length} linha(s)` : 'Executada sem linhas de retorno'}</b>
+                  <span>{result.ms} ms{result.rows.length > shownRows.length ? ` · exibindo as primeiras ${shownRows.length}` : ''}</span>
+                </div>
+                {result.rows.length ? (
+                  <div className="table-wrap">
+                    <table>
+                      <thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead>
+                      <tbody>
+                        {shownRows.map((row, index) => (
+                          <tr key={index}>
+                            {columns.map((column) => {
+                              const value = row?.[column];
+                              return <td key={column} className={value === null || value === undefined ? 'null-cell' : ''}>{value === null || value === undefined ? 'NULL' : typeof value === 'object' ? JSON.stringify(value) : String(value)}</td>;
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : result.raw ? <pre className="query-raw">{JSON.stringify(result.raw, null, 2)}</pre> : null}
+              </div>
+            )}
+          </>
+        ) : (
+          <EmptyState title="Escolha uma consulta" description="Selecione uma consulta salva à esquerda para ver o SQL e executá-la, ou crie uma consulta avulsa." />
+        )}
+      </section>
     </div>
   );
 }
