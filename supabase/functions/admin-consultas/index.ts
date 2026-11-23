@@ -11,7 +11,8 @@
 //
 // Configuração (uma vez):
 //   1. Gere um token pessoal em https://supabase.com/dashboard/account/tokens
-//   2. npx supabase secrets set SUPABASE_ACCESS_TOKEN=sbp_... --project-ref <PROJECT_REF>
+//   2. npx supabase secrets set CONSULTAS_ACCESS_TOKEN=sbp_... --project-ref <PROJECT_REF>
+//      (o nome não pode começar com SUPABASE_, prefixo reservado pelo Supabase)
 //   3. npx supabase functions deploy admin-consultas --project-ref <PROJECT_REF>
 // As consultas listadas são as que o dono do token enxerga no SQL Editor.
 import { createClient } from 'npm:@supabase/supabase-js@2';
@@ -46,7 +47,7 @@ async function management(path: string, token: string, init: RequestInit = {}) {
     payload = text;
   }
   if (!response.ok) {
-    if (response.status === 401) throw new SetupError('O token SUPABASE_ACCESS_TOKEN é inválido ou expirou. Gere outro e atualize o segredo.');
+    if (response.status === 401) throw new SetupError('O token CONSULTAS_ACCESS_TOKEN é inválido ou expirou. Gere outro e atualize o segredo.');
     const message = payload && typeof payload === 'object' && 'message' in payload
       ? String((payload as { message: unknown }).message)
       : typeof payload === 'string' && payload ? payload : `HTTP ${response.status}`;
@@ -77,8 +78,8 @@ Deno.serve(async (request) => {
   if (adminError) return json({ error: `Erro ao ler admin_users: ${adminError.message}` }, 500);
   if (!adminRow) return json({ error: 'Esta conta não está autorizada a usar as consultas.' }, 403);
 
-  const token = (Deno.env.get('SUPABASE_ACCESS_TOKEN') ?? '').trim();
-  if (!token) return json({ setup_required: true, error: 'Falta configurar o segredo SUPABASE_ACCESS_TOKEN.' });
+  const token = (Deno.env.get('CONSULTAS_ACCESS_TOKEN') ?? '').trim();
+  if (!token) return json({ setup_required: true, error: 'Falta configurar o segredo CONSULTAS_ACCESS_TOKEN.' });
 
   let body: Record<string, unknown>;
   try {

@@ -3707,7 +3707,7 @@ function QueriesPanel({ onSuccess, onError }: { onSuccess: (text: string) => voi
       setQueries((response.snippets ?? []).slice().sort((first, second) => first.name.localeCompare(second.name, 'pt-BR')));
     } catch (error) {
       if (error instanceof AdminFunctionMissingError) setSetup('missing');
-      else if (/SUPABASE_ACCESS_TOKEN/.test(displayError(error))) {
+      else if (/CONSULTAS_ACCESS_TOKEN/.test(displayError(error))) {
         setSetup('token');
         setSetupMessage(displayError(error));
       } else setListError(displayError(error));
@@ -3754,7 +3754,7 @@ function QueriesPanel({ onSuccess, onError }: { onSuccess: (text: string) => voi
     setResult(null);
     try {
       const response = await callEdgeFunction<QueryResult & { setup_required?: boolean; error?: string }>(queriesFunctionName, { action: 'run', query });
-      if (response.setup_required) throw new Error(response.error ?? 'Configure o segredo SUPABASE_ACCESS_TOKEN.');
+      if (response.setup_required) throw new Error(response.error ?? 'Configure o segredo CONSULTAS_ACCESS_TOKEN.');
       setResult({ rows: response.rows ?? [], raw: response.raw, ms: response.ms });
       onSuccess(`Consulta executada${response.rows?.length ? ` · ${response.rows.length} linha(s)` : ''}.`);
     } catch (error) {
@@ -3795,7 +3795,7 @@ function QueriesPanel({ onSuccess, onError }: { onSuccess: (text: string) => voi
               (ele nunca chega ao navegador). Gere o token em <code>supabase.com/dashboard/account/tokens</code> e rode na pasta do projeto:
             </p>
             {setupMessage && <p className="setup-detail">{setupMessage}</p>}
-            <pre>{`npx supabase login\nnpx supabase secrets set SUPABASE_ACCESS_TOKEN=sbp_SEU_TOKEN --project-ref ${projectRef}\nnpx supabase functions deploy ${queriesFunctionName} --project-ref ${projectRef}`}</pre>
+            <pre>{`npx supabase login\nnpx supabase secrets set CONSULTAS_ACCESS_TOKEN=sbp_SEU_TOKEN --project-ref ${projectRef}\nnpx supabase functions deploy ${queriesFunctionName} --project-ref ${projectRef}`}</pre>
             <button className="primary-button" type="button" onClick={() => void load()}><Icon name="refresh" size={16} /> Tentar novamente</button>
           </div>
         </div>
