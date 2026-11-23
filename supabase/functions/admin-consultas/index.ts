@@ -51,6 +51,13 @@ async function management(path: string, token: string, init: RequestInit = {}) {
     const message = payload && typeof payload === 'object' && 'message' in payload
       ? String((payload as { message: unknown }).message)
       : typeof payload === 'string' && payload ? payload : `HTTP ${response.status}`;
+    if (response.status === 403) {
+      // Diz qual permissão do token falta, conforme o endpoint chamado.
+      const needed = path.startsWith('/snippets')
+        ? 'ler as consultas salvas: o token precisa da permissão "SQL Snippets" (leitura)'
+        : 'executar SQL: o token precisa da permissão "Database" (leitura e escrita)';
+      throw new Error(`Sem permissão para ${needed}. Detalhe do Supabase: ${message}`);
+    }
     throw new Error(message);
   }
   return payload;
